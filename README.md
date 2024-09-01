@@ -1,3 +1,9 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+# User-Interface
+=======
+>>>>>>> c912239 (initial commit)
 # React Restaurant Online Menu
 
 This repository contains a simple online menu built using React.js.
@@ -21,3 +27,9 @@ This repository contains a simple online menu built using React.js.
 - Manage Cart
 - Submit Order
 - Track Order
+<<<<<<< HEAD
+Your changes (local)
+=======
+Changes from the remote branch
+>>>>>>> c912239 (commit hash)
+
