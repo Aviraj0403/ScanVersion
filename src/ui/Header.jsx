@@ -22,7 +22,7 @@ const Header = () => {
       <div className="flex w-16 items-center justify-end gap-2 sm:w-1/4">
         <CartOverview />
         <a
-          href="https://github.com/iamhosen/"
+          href="#"
           className="relative rounded-full border p-2 text-gray-900 transition-all duration-500 ease-in-out hover:bg-gray-800 hover:text-white"
         >
           <FaGithub className="text-2xl" />
