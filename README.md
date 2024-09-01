@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
+
 # User-Interface
 =======
 >>>>>>> c912239 (initial commit)
