@@ -1,17 +1,19 @@
-import { formatCurrency } from "../../utils/helpers.js";
-import { useSelector, useDispatch } from "react-redux";
-import { addItem, getCurrentQuantityById } from "../cart/cartSlice.js";
-import UpdateItemQuantity from "../cart/UpdateItemQuantity.jsx";
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Card, CardContent, CardMedia, Typography, IconButton, Tooltip, Button } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { formatCurrency } from '../../utils/helpers.js';
+import { addItem, removeItem, getCurrentQuantityById } from '../cart/cartSlice.js';
+import UpdateItemQuantity from '../cart/UpdateItemQuantity.jsx';
 
-export const MenuItem = ({ pizza }) => {
+const MenuItem = ({ pizza }) => {
   const dispatch = useDispatch();
-
   const { id, name, unitPrice, ingredients, soldOut, imageUrl } = pizza;
-
   const currentQuantity = useSelector(getCurrentQuantityById(id));
   const isInCart = currentQuantity > 0;
 
-  const addToCart = () => {
+  const handleAddToCart = () => {
     const newItem = {
       pizzaId: id,
       name,
@@ -21,40 +23,65 @@ export const MenuItem = ({ pizza }) => {
     };
     dispatch(addItem(newItem));
   };
-  
+
+  const handleRemoveFromCart = () => {
+    dispatch(removeItem(id));
+  };
+
   return (
-    <div className="rounded-lg bg-white p-2 text-center shadow transition-all hover:shadow-lg">
-      <img
-        src={imageUrl}
+    <Card sx={{ maxWidth: 345, margin: 2, transition: 'transform 0.2s ease-in-out', '&:hover': { transform: 'scale(1.05)' } }}>
+      <CardMedia
+        component="img"
+        height="140"
+        image={imageUrl}
         alt={name}
-        className="mx-auto mb-2 w-24 rounded-full"
+        sx={{ objectFit: 'cover' }}
       />
-      <div className="mb-2">
-        <h3 className="font-medium">{name}</h3>
-
+      <CardContent>
+        <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
+          {name}
+        </Typography>
         {soldOut ? (
-          <p className="text-gray-400">Sold Out!</p>
+          <Typography variant="body2" color="text.secondary">
+            Sold Out!
+          </Typography>
         ) : (
-          <p className="text-orange-600">{formatCurrency(unitPrice)}</p>
+          <Typography variant="body2" color="orange">
+            {formatCurrency(unitPrice)}
+          </Typography>
         )}
-
-        <p className="line-clamp-1 text-sm opacity-50">
-          {ingredients?.join(", ")}
-        </p>
-      </div>
-
+        <Typography variant="body2" color="text.secondary" sx={{ marginTop: 1 }}>
+          {ingredients?.join(', ')}
+        </Typography>
+      </CardContent>
+      <CardContent>
+        {isInCart ? (
+          <UpdateItemQuantity pizzaId={id} quantity={currentQuantity} />
+        ) : (
+          !soldOut && (
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={handleAddToCart}
+              sx={{ marginTop: 2 }}
+            >
+              Add to Cart
+            </Button>
+          )
+        )}
+      </CardContent>
       {isInCart && (
-        <UpdateItemQuantity pizzaId={id} quantity={currentQuantity} />
+        <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Tooltip title="Remove from Cart">
+            <IconButton color="error" onClick={handleRemoveFromCart}>
+              <RemoveIcon />
+            </IconButton>
+          </Tooltip>
+        </CardContent>
       )}
-
-      {!soldOut && !isInCart && (
-        <button
-          className="mt-2 w-full rounded bg-gray-50 py-1 text-gray-600 transition-all hover:bg-gray-100"
-          onClick={addToCart}
-        >
-          Add to Cart
-        </button>
-      )}
-    </div>
+    </Card>
   );
 };
+
+export default MenuItem;
