@@ -1,0 +1,188 @@
+/* Ensure the footer takes up the full width of the viewport */
+.footer {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Keep the original background settings */
+.footer-top {
+  position: relative;
+  padding-block: 2rem; /* Adjust padding for better responsiveness */
+  background-image: url('/src/assets/images/footer/footer-illustration.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: bottom;
+  border-bottom: 2px solid var(--independence_30);
+}
+
+/* Delivery boy animation */
+.footer-top::after {
+  content: url('/src/assets/images/delivery-boy.svg');
+  position: absolute;
+  bottom: -11px;
+  left: -160px;
+  width: 160px;
+  animation: running-cycle 20s linear infinite;
+}
+
+@keyframes running-cycle {
+  0% { left: -160px; }
+  100% { left: 100%; }
+}
+
+/* Container styling */
+.footer-top .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center align all content */
+  gap: 2rem; /* Increased gap for better spacing */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Footer branding */
+.footer-brand {
+  text-align: center;
+}
+
+.footer-brand .logo {
+  color: var(--rich-black-fogra-29);
+  font-size: 3.2rem;
+}
+
+/* Footer text and social list */
+.footer-text {
+  margin: 1rem 0; /* Adjusted margins for better responsiveness */
+  text-align: center;
+}
+
+.social-list {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.social-link {
+  background-color: var(--dark-orange);
+  color: var(--white);
+  font-size: 1.5rem;
+  padding: 10px;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.social-link:hover, .social-link:focus {
+  background-color: var(--rich-black-fogra-29);
+}
+
+/* Footer list styling */
+.footer-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-list-title {
+  color: var(--rich-black-fogra-29);
+  font-family: var(--ff-rubik);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-align: center; /* Center align section titles */
+}
+
+.footer-list-item {
+  margin-bottom: 0.5rem;
+  text-align: center; /* Center align list items */
+}
+
+/* Responsive grid for contact info, opening hours, and foodie sections */
+.footer-info {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .footer-info {
+    grid-template-columns: repeat(3, 1fr); /* Three equal columns */
+    text-align: left; /* Align text to the left for larger screens */
+  }
+
+  .footer-list-title {
+    text-align: left; /* Align titles to the left for larger screens */
+  }
+
+  .footer-list-item {
+    text-align: left; /* Align list items to the left for larger screens */
+  }
+}
+
+/* Footer bottom styling */
+.footer-bottom {
+  padding: 1rem;
+  text-align: center;
+  background-color: var(--dark-gray);
+  color: var(--white);
+}
+
+.copyright-text {
+  margin: 0;
+}
+
+.copyright-link {
+  color: var(--orange);
+  text-decoration: none;
+}
+
+.copyright-link:hover, .copyright-link:focus {
+  text-decoration: underline;
+}
+
+/* Responsive design */
+@media (min-width: 640px) {
+  .footer-brand .logo {
+    font-size: 2.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .footer-brand .logo {
+    font-size: 3rem;
+  }
+
+  .footer-top .container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  .footer-list {
+    flex: 1;
+    margin: 0 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .footer-top {
+    padding-block: 3rem; /* Adjust padding for larger screens */
+  }
+
+  .footer-top .container {
+    gap: 3rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .footer-top {
+    background-size: contain; /* Keep the background size as in the original code */
+  }
+
+  .footer-top .container {
+    max-width: 1200px;
+  }
+}

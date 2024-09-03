@@ -1,6 +1,6 @@
 import { Outlet, useNavigation } from "react-router-dom";
-import Header from "./Header";
-import Loader from "./Loader";
+import Header from "../components/Header/Header.jsx";
+import Loader from "../components/Loader/Loader.jsx";
 
 const AppLayout = () => {
   const navigation = useNavigation();
