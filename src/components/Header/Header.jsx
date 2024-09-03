@@ -1,35 +1,180 @@
-
-import { FaUtensils } from "react-icons/fa";
-import { FaGithub } from "react-icons/fa";
-
+import React from "react";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  IconButton,
+  useScrollTrigger,
+  useTheme,
+  useMediaQuery,
+  Menu,
+  MenuItem,
+} from "@mui/material";
+import { FaGithub, FaUtensils, FaBars } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import CartOverview from "../../pages/cart/CartOverview.jsx";
-import SearchOrder from "../../pages/order/SearchOrder";
+import CartOverview from "../../pages/cart/CartOverview";
 import Username from "../../pages/user/Username";
+import InputBase from "@mui/material/InputBase";
+import SearchIcon from "@mui/icons-material/Search";
+import { keyframes } from "@mui/system";
+// import "./Header.css"
+
+const colorChange = keyframes`
+  0% { color: #FB923C; }
+  50% { color: #FBBF24; }
+  100% { color: #987b71; }
+`;
+
+const iconHover = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+`;
 
 const Header = () => {
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 100,
+  });
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const openMenu = Boolean(anchorEl);
+  const handleClick = (event) => setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
+
   return (
-    <header className="mx-auto mb-4 flex max-w-screen-xl items-center justify-between p-4">
-      <Link to="/" className="flex w-16 items-center gap-2 sm:w-1/4">
-        < FaUtensils className="h-8 w-8 text-orange-600" />
-        <div className="hidden sm:block">
-          <h1 className="-mb-1 text-2xl font-bold">BR Tech </h1>
-          <Username />
-        </div>
-      </Link>
-      <div className="w-full text-center sm:w-1/2">
-        <SearchOrder />
-      </div>
-      <div className="flex w-16 items-center justify-end gap-2 sm:w-1/4">
-        <CartOverview />
-        <a
-          href="https://github.com/BrTech-Restaurant/ScanVersion/"
-          className="relative rounded-full border p-2 text-gray-900 transition-all duration-500 ease-in-out hover:bg-gray-800 hover:text-white"
+    <AppBar
+      position="fixed"
+      className="header"
+      sx={{
+        backgroundColor: trigger ? "#004353" : "#fff",
+        color: trigger ? "#fff" : "#111",
+        transition: "background-color 0.3s ease, color 0.3s ease",
+        zIndex: 1000,
+        animation: trigger ? `${colorChange} 2s infinite` : "none",
+      }}
+    >
+      <Toolbar
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          maxWidth: "1200px",
+          width: "100%",
+          mx: "auto",
+          p: "0.5rem",
+          flexDirection: isMobile ? "column" : "row",
+        }}
+      >
+        <Link
+          to="/"
+          style={{ display: "flex", alignItems: "center", textDecoration: "none", color: "inherit" }}
         >
-          <FaGithub className="text-2xl" />
-        </a>
-      </div>
-    </header>
+          <FaUtensils style={{ fontSize: "2.5rem", color: trigger ? "#FBBF24" : "#FB923C" }} />
+          <Box sx={{ display: "flex", flexDirection: "column", ml: 1 }}>
+            <Typography variant="h6" component="h1" sx={{ fontWeight: "bold", color: trigger ? "#FBBF24" : "#FB923C" }}>
+              BR Tech
+            </Typography>
+            <Username sx={{ mt: 0.5, fontSize: "0.75rem", color: trigger ? "#fff" : "#111" }} />
+          </Box>
+        </Link>
+
+        {!isMobile && (
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              justifyContent: "center",
+              mt: 1,
+            }}
+          >
+            <InputBase
+              placeholder="Search…"
+              startAdornment={<SearchIcon sx={{ color: "gray", mr: 1 }} />}
+              sx={{
+                pl: 2,
+                pr: 4,
+                py: 0.5,
+                bgcolor: "grey.100",
+                borderRadius: 50,
+                width: "100%",
+                maxWidth: 300,
+                transition: "all 0.3s ease",
+                "&:hover": { bgcolor: "grey.200", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" },
+              }}
+            />
+          </Box>
+        )}
+
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+          {isMobile ? (
+            <IconButton
+              onClick={handleClick}
+              sx={{
+                borderRadius: "50%",
+                p: 1,
+                color: "inherit",
+                transition: "color 0.3s ease",
+              }}
+            >
+              <FaBars style={{ fontSize: "2.5rem" }} />
+            </IconButton>
+          ) : (
+            <>
+              <IconButton
+                component="div"
+                sx={{
+                  borderRadius: "50%",
+                  p: 1,
+                  color: "inherit",
+                  transition: "color 0.3s ease",
+                  animation: `${iconHover} 0.6s ease-in-out`,
+                  "&:hover": { color: trigger ? "#FBBF24" : "#FB923C" },
+                }}
+              >
+                <CartOverview />
+              </IconButton>
+              <IconButton
+                component="a"
+                href="https://github.com/BrTech-Restaurant/ScanVersion/"
+                sx={{
+                  borderRadius: "50%",
+                  p: 1,
+                  color: "inherit",
+                  transition: "color 0.3s ease",
+                  animation: `${iconHover} 0.6s ease-in-out`,
+                  "&:hover": { color: trigger ? "#FBBF24" : "#FB923C" },
+                }}
+              >
+                <FaGithub style={{ fontSize: "2.5rem" }} />
+              </IconButton>
+            </>
+          )}
+        </Box>
+      </Toolbar>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={openMenu}
+        onClose={handleClose}
+        sx={{ mt: `var(--header-height)` }} // Adjust for the dynamic header height
+      >
+        <MenuItem onClick={handleClose}>
+          <Link to="/cart" style={{ textDecoration: "none", color: "inherit" }}>
+            Cart Overview
+          </Link>
+        </MenuItem>
+        <MenuItem onClick={handleClose}>
+          <Link to="/profile" style={{ textDecoration: "none", color: "inherit" }}>
+            Profile
+          </Link>
+        </MenuItem>
+      </Menu>
+    </AppBar>
   );
 };
 

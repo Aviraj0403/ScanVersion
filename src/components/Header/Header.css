@@ -1,0 +1,244 @@
+/* CSS Variables for consistency */
+:root {
+  --header-height: 60px; /* Adjust this based on your header height */
+  --white: #ffffff;
+  --rich-black-fogra-29: #0d1117;
+  --deep-saffron: #fbbf24;
+  --dark-orange: #fb923c;
+  --champagne-pink_20: rgba(250, 240, 230, 0.2);
+  --black_95: rgba(0, 0, 0, 0.95);
+  --gainsboro: #dcdcdc;
+  --spanish-gray: #9e9e9e;
+}
+
+/*-----------------------------------*\
+  #HEADER
+\*-----------------------------------*/
+
+.header {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: var(--white);
+  z-index: 1000;
+  border-bottom: 1px solid var(--champagne-pink_20);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  height: var(--header-height); /* Dynamic header height */
+  display: flex;
+  align-items: center;
+}
+
+.header.active {
+  background-color: var(--rich-black-fogra-29);
+  color: var(--white);
+}
+
+.header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.logo {
+  color: var(--rich-black-fogra-29);
+  font-size: 2.5rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.logo .span {
+  color: var(--deep-saffron);
+  margin-left: 0.2rem;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-list {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-item {
+  list-style: none;
+}
+
+.navbar-link {
+  color: var(--rich-black-fogra-29);
+  font-size: 1rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.navbar-link:hover,
+.navbar-link:focus {
+  color: var(--dark-orange);
+}
+
+.header-btn-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.search-btn ion-icon {
+  font-size: 1.5rem;
+  color: var(--rich-black-fogra-29);
+  transition: color 0.3s ease;
+}
+
+.search-btn:hover ion-icon,
+.search-btn:focus ion-icon {
+  color: var(--dark-orange);
+}
+
+.github-link {
+  font-size: 1.5rem;
+  color: var(--rich-black-fogra-29);
+  transition: color 0.3s ease;
+}
+
+.github-link:hover,
+.github-link:focus {
+  color: var(--dark-orange);
+}
+
+.nav-toggle-btn {
+  display: none; /* Hidden on larger screens */
+}
+
+.line {
+  width: 25px;
+  height: 3px;
+  background-color: var(--rich-black-fogra-29);
+  margin: 4px 0;
+  transition: transform 0.3s ease;
+}
+
+.nav-toggle-btn.active .line.top {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.nav-toggle-btn.active .line.middle {
+  opacity: 0;
+}
+
+.nav-toggle-btn.active .line.bottom {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    display: none;
+  }
+
+  .nav-toggle-btn {
+    display: block;
+  }
+
+  .navbar.active {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: var(--header-height); /* Adjust based on header height */
+    left: 0;
+    width: 100%;
+    background-color: var(--white);
+    border-top: 1px solid var(--champagne-pink_20);
+  }
+
+  .navbar-list {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .navbar-link {
+    padding: 1rem;
+    font-size: 1.25rem;
+  }
+}
+
+/*-----------------------------------*\
+  #SEARCH BOX
+\*-----------------------------------*/
+
+.search-container {
+  position: fixed;
+  top: -100%;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: var(--black_95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  z-index: 1100;
+  transition: top 0.5s ease;
+}
+
+.search-container.active {
+  top: 0;
+}
+
+.search-box {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.5rem;
+  color: var(--gainsboro);
+  background-color: var(--black_95);
+  border: none;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: var(--spanish-gray);
+}
+
+.search-submit {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--gainsboro);
+  font-size: 2rem;
+}
+
+.search-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: var(--gainsboro);
+  cursor: pointer;
+}
+
+/* Responsive Design Adjustments */
+@media (min-width: 768px) {
+  .search-input {
+    font-size: 2rem;
+  }
+
+  .search-submit {
+    font-size: 3rem;
+  }
+}

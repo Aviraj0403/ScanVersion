@@ -5,22 +5,23 @@
   position: relative;
 }
 
-/* Keep the original background settings */
+/* Footer top section */
 .footer-top {
   position: relative;
-  padding-block: 2rem; /* Adjust padding for better responsiveness */
+  padding: 2rem; /* Adjust padding for better responsiveness */
   background-image: url('/src/assets/images/footer/footer-illustration.png');
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: contain; /* Ensure the background image fits well */
   background-position: bottom;
-  border-bottom: 2px solid var(--independence_30);
+  border-bottom: 2px solid #987b71; /* Updated border color */
+  overflow: hidden;
 }
 
 /* Delivery boy animation */
 .footer-top::after {
   content: url('/src/assets/images/delivery-boy.svg');
   position: absolute;
-  bottom: -11px;
+  bottom: -11px; /* Adjusted for better positioning */
   left: -160px;
   width: 160px;
   animation: running-cycle 20s linear infinite;
@@ -47,8 +48,13 @@
 }
 
 .footer-brand .logo {
-  color: var(--rich-black-fogra-29);
+  color: #987b71; /* Updated color */
   font-size: 3.2rem;
+  transition: color 0.3s ease; /* Added transition for color change */
+}
+
+.footer-brand .logo:hover {
+  color: #a06f61; /* Slightly different color on hover */
 }
 
 /* Footer text and social list */
@@ -61,19 +67,23 @@
   display: flex;
   justify-content: center;
   gap: 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
 }
 
 .social-link {
-  background-color: var(--dark-orange);
-  color: var(--white);
+  background-color: #f57c00; /* Updated color */
+  color: #fff;
   font-size: 1.5rem;
   padding: 10px;
   border-radius: 50%;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .social-link:hover, .social-link:focus {
-  background-color: var(--rich-black-fogra-29);
+  background-color: #e65100; /* Darker color on hover */
+  transform: scale(1.1); /* Slight zoom effect on hover */
 }
 
 /* Footer list styling */
@@ -84,12 +94,17 @@
 }
 
 .footer-list-title {
-  color: var(--rich-black-fogra-29);
-  font-family: var(--ff-rubik);
+  color: #987b71; /* Updated color */
+  font-family: 'Rubik', sans-serif; /* Added fallback font */
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
   text-align: center; /* Center align section titles */
+  transition: color 0.3s ease; /* Added transition for color change */
+}
+
+.footer-list-title:hover {
+  color: #a06f61; /* Slightly different color on hover */
 }
 
 .footer-list-item {
@@ -125,16 +140,22 @@
 .footer-bottom {
   padding: 1rem;
   text-align: center;
-  background-color: var(--dark-gray);
-  color: var(--white);
+  background-color: #333; /* Updated background color */
+  color: #fff;
+}
+
+.footer-bottom .container {
+  display: flex;
+  justify-content: center; /* Center the copyright text */
 }
 
 .copyright-text {
   margin: 0;
+  font-size: 0.875rem; /* Smaller font size for a slimmer look */
 }
 
 .copyright-link {
-  color: var(--orange);
+  color: #f57c00; /* Updated color */
   text-decoration: none;
 }
 
