@@ -1,0 +1,25 @@
+/* src/styles/variables.css */
+:root {
+    --ff-rubik: 'Rubik', sans-serif;
+    --rich-black-fogra-29: #003B5C;
+    --deep-saffron: #FF9D2D;
+    --white: #FFFFFF;
+    --section-padding: 40px;
+    --isabelline: #F4F4F4;
+    --cinnabar: #E94F2F;
+    --cultured: #F5F5F5;
+    --fw-500: 500;
+    --fw-600: 600;
+    --fs-1: 2rem;
+    --fs-2: 1.5rem;
+    --fs-3: 1.25rem;
+    --fs-4: 1rem;
+    --fs-5: 0.875rem;
+    --bg-color: #FF9D2D;
+    --padding-inline: 35px;
+    --padding-block: 2px;
+    --height: 45px;
+    --transition-1: background-color 0.3s ease;
+    --transition-2: transform 0.3s ease;
+  }
+  

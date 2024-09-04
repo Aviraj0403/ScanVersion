@@ -1,12 +1,14 @@
 export function formatCurrency(value) {
-    return new Intl.NumberFormat("en", {
+    return new Intl.NumberFormat("en-IN", {
         style: "currency",
-        currency: "IND",
+        currency: "INR",
+        minimumFractionDigits: 2, // Optional: Adjust the number of decimal places
+        maximumFractionDigits: 2,
     }).format(value);
 }
 
 export function formatDate(dateStr) {
-    return new Intl.DateTimeFormat("en", {
+    return new Intl.DateTimeFormat("en-IN", {
         day: "numeric",
         month: "short",
         hour: "2-digit",

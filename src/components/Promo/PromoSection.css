@@ -1,0 +1,105 @@
+/* src/components/PromoSection.css */
+
+.section {
+  padding-block: var(--section-padding);
+}
+
+.section.white {
+  background-color: var(--isabelline);
+}
+
+.section-divider {
+  position: relative;
+}
+
+.section-divider::before,
+.section-divider::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 15px;
+  background-repeat: repeat no-repeat;
+  background-position: bottom;
+}
+
+.section-divider.white::after {
+  background-image: url("../images/shape-white.png");
+}
+
+.section-divider.gray::after {
+  background-image: url("../images/shape-grey.png");
+}
+
+.container {
+  padding-inline: 15px;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.promo-section {
+  position: relative;
+  overflow: hidden; /* Prevent overflow */
+}
+
+.promo-list {
+  display: flex;
+  flex-wrap: nowrap; /* Prevent wrapping */
+  gap: 10px;
+  overflow-x: auto; /* Enable horizontal scrolling */
+  scroll-snap-type: x mandatory; /* Snap to items */
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.promo-item {
+  flex: 0 0 auto; /* Prevent resizing */
+  width: 300px; /* Adjust width as needed */
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  scroll-snap-align: center; /* Center alignment */
+}
+
+.promo-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .promo-item {
+    width: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .promo-item {
+    width: 200px;
+  }
+}
+
+.has-scrollbar::-webkit-scrollbar {
+  height: 12px;
+}
+
+.has-scrollbar::-webkit-scrollbar-button {
+  width: calc(25% - 40px);
+}
+
+.has-scrollbar::-webkit-scrollbar-track {
+  outline: 2px solid var(--deep-saffron);
+  border-radius: 50px;
+}
+
+.has-scrollbar::-webkit-scrollbar-thumb {
+  border: 3px solid var(--cultured);
+  border-radius: 50px;
+}

@@ -1,0 +1,62 @@
+/* src/components/PromoCard.css */
+
+.promo-card {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.promo-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.promo-card-image {
+  width: 100%;
+  height: 150px;
+  background-size: cover;
+  background-position: center;
+}
+
+.promo-card-content {
+  padding: 16px;
+}
+
+.promo-card-icon {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 8px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Define reusable styles for promo types */
+.promo-card--default {
+  --icon-url: url('/src/assets/images/promo-icon-1.svg');
+  --image-url: url('/src/assets/images/promo-1.png');
+}
+
+.promo-card--mexican-pizza {
+  --icon-url: url('/src/assets/images/promo-icon-2.svg');
+  --image-url: url('/src/assets/images/promo-2.png');
+}
+
+.promo-card--soft-drinks {
+  --icon-url: url('/src/assets/images/promo-icon-3.svg');
+  --image-url: url('/src/assets/images/promo-3.png');
+}
+
+.promo-card-icon {
+  background-image: var(--icon-url);
+}
+
+.promo-card-image {
+  background-image: var(--image-url);
+}

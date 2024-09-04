@@ -1,8 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Card, CardContent, CardMedia, Typography, IconButton, Tooltip, Button } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
+import { Card, CardContent, CardMedia, Typography, Button, Tooltip } from '@mui/material';
 import { formatCurrency } from '../../utils/helpers.js';
 import { addItem, removeItem, getCurrentQuantityById } from '../cart/cartSlice.js';
 import UpdateItemQuantity from '../cart/UpdateItemQuantity.jsx';
@@ -71,15 +69,7 @@ const MenuItem = ({ pizza }) => {
           )
         )}
       </CardContent>
-      {isInCart && (
-        <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Tooltip title="Remove from Cart">
-            <IconButton color="error" onClick={handleRemoveFromCart}>
-              <RemoveIcon />
-            </IconButton>
-          </Tooltip>
-        </CardContent>
-      )}
+     
     </Card>
   );
 };
