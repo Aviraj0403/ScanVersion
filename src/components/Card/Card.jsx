@@ -1,7 +1,6 @@
 import React from 'react';
-import { CardContent, CardMedia, Typography, Button } from '@mui/material';
 import PropTypes from 'prop-types';
-import './card.css'; // Import additional CSS if needed
+import { CardContent, CardMedia, Typography, Button } from '@mui/material';
 
 const Card = ({
   imageUrl,
@@ -15,23 +14,23 @@ const Card = ({
   showBadge = false,
   onButtonClickDisabled = false,
 }) => (
-  <div className="food-menu-card relative overflow-hidden transition-transform duration-300 hover:scale-105 hover:bg-light-orange">
-    <div className="card-banner relative w-full overflow-hidden mb-2">
+  <div className="food-menu-card relative bg-white p-4 shadow-md border border-gray-200 rounded-lg transition-transform duration-300 transform hover:scale-105 hover:bg-orange-100 cursor-pointer">
+    <div className="card-banner relative mb-2">
       <CardMedia
         component="img"
-        height="auto"
+        height="200"
         image={imageUrl}
         alt={title}
         className="card-image transition-transform duration-300 transform hover:scale-110"
       />
       {showBadge && badgeText && (
-        <div className="badge absolute top-2 left-2 bg-deep-saffron text-white px-2 py-1 font-bold rounded">
+        <div className="badge absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 font-bold rounded">
           {badgeText}
         </div>
       )}
       {showButton && (
         <Button
-          className="food-menu-btn absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-cinnabar text-white w-4/6 h-9 text-center leading-9 opacity-0 transition-opacity duration-300 hover:bg-deep-saffron rounded-full font-bold"
+          className={`food-menu-btn absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-red-500 text-white w-4/6 h-9 text-center leading-9 rounded-full font-bold ${onButtonClickDisabled ? 'opacity-50' : 'opacity-100'}`}
           variant="contained"
           onClick={onButtonClick}
           disabled={onButtonClickDisabled}
@@ -42,12 +41,12 @@ const Card = ({
       )}
     </div>
     <CardContent className="flex flex-col items-center">
-      <Typography variant="h6" component="div" className="card-title mb-2 font-bold text-xl">
+      <Typography variant="h6" component="div" className="mb-2 font-bold text-xl text-center">
         {title}
       </Typography>
       {children}
       {subtitle && (
-        <Typography variant="body2" color="text.secondary" sx={{ marginTop: 1 }}>
+        <Typography variant="body2" color="text.secondary" className="mt-1 text-center">
           {subtitle}
         </Typography>
       )}

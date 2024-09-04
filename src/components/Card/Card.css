@@ -1,3 +1,4 @@
+/* Main card styling */
 .food-menu-card {
   background-color: var(--white);
   padding: 15px;
@@ -60,7 +61,7 @@
   text-align: center;
   line-height: 35px;
   opacity: 0;
-  transition: opacity 0.3s, background-color 0.3s, transform 0.3s;
+  transition: opacity 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
   border: none;
   cursor: pointer;
   border-radius: 20px;
