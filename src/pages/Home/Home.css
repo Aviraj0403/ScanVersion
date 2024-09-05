@@ -1,15 +1,17 @@
-/* Ensure the container takes up the full height of the viewport */
+
+
 .home-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 2rem;
-    text-align: center;
-    background-color: #f9f9f9; /* Light background color */
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  text-align: center;
+  background-size: cover;
+  background-position: center center;
+  background-color: #f9f9f9; /* Fallback background color */
+}
   h1 {
     margin-bottom: 2rem;
     font-size: 2rem; /* Base font size */

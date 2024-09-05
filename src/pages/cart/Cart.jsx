@@ -33,7 +33,7 @@ const Cart = () => {
           to="/order/new"
           className="rounded bg-orange-600 px-4 py-2 font-medium text-white"
         >
-          Order pizzas
+          Order Now
         </Link>
 
         <button
