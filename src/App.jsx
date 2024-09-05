@@ -5,6 +5,7 @@ import Footer from "./components/Footer/footer.jsx"; // Import the Footer compon
 function App() {
   return (
     <>
+      {/* hello  */}
       <RouterProvider router={router} />
       <Footer /> {/* Add the Footer component here */}
     </>
