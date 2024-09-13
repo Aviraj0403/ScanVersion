@@ -2,7 +2,10 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import CreateUser from '../user/CreateUser';
 import { Link } from 'react-router-dom';
-import { CTASection, DeliverySection, TestimonialsSection } from './Section'; // Import the sections
+import  CTASection  from '../../components/Section/CTASection';
+import  DeliverySection  from '../../components/Section/DeliverySection';
+import  TestimonialsSection from '../../components/Section/TestimonialsSection'
+// import { CTASection, DeliverySection, TestimonialsSection } from './Section'; // Import the sections
 
 const Home = () => {
   const username = useSelector((state) => state.user.name);
@@ -23,10 +26,17 @@ const Home = () => {
           </Link>
         )}
       </header>
+
+      <div>
+    <CTASection />
+    <DeliverySection />
+    <TestimonialsSection />
+  </div>
       <main className="flex-grow">
-        <CTASection />
-        <DeliverySection />
-        <TestimonialsSection />
+     
+        {/* <CTASection /> */}
+        {/* <DeliverySection /> */}
+        {/* <TestimonialsSection /> */}
       </main>
     </div>
   );

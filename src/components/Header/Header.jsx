@@ -138,7 +138,7 @@ const Header = () => {
               >
                 <CartOverview />
               </IconButton>
-              <IconButton
+              {/* <IconButton
                 component="a"
                 href="https://github.com/BrTech-Restaurant/ScanVersion/"
                 sx={{
@@ -151,7 +151,7 @@ const Header = () => {
                 }}
               >
                 <FaGithub style={{ fontSize: "2.5rem" }} />
-              </IconButton>
+              </IconButton> */}
             </>
           )}
         </Box>
