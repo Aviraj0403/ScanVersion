@@ -9,15 +9,14 @@ import Card from '../../components/Card/Card.jsx';
 import { useSpring, animated } from '@react-spring/web';
 import './menuItem.css';
 
-const MenuItem = ({ pizza }) => {
+const MenuItem = ({ fooditem }) => {
   const dispatch = useDispatch();
-  const { id, name, unitPrice, ingredients, soldOut, imageUrl, discount } = pizza;
-  const currentQuantity = useSelector(getCurrentQuantityById(id));
+  const { _id, name, unitPrice, ingredients, soldOut, imageUrl, discount } = fooditem;
+  const currentQuantity = useSelector(getCurrentQuantityById(_id));
   const isInCart = currentQuantity > 0;
-  
+
   const [isButtonDisabled, setButtonDisabled] = useState(false);
 
-  // Spring configuration for cart animation
   const [props, set] = useSpring(() => ({
     opacity: 1,
     transform: 'scale(1)',
@@ -28,7 +27,7 @@ const MenuItem = ({ pizza }) => {
     if (isButtonDisabled || soldOut) return;
 
     const newItem = {
-      pizzaId: id,
+      fooditemId: _id,
       name,
       quantity: 1,
       unitPrice,
@@ -46,7 +45,7 @@ const MenuItem = ({ pizza }) => {
   const handleRemoveFromCart = () => {
     if (isButtonDisabled) return;
 
-    dispatch(removeItem(id));
+    dispatch(removeItem(_id));
     setButtonDisabled(true);
     setTimeout(() => setButtonDisabled(false), 300);
   };
@@ -78,11 +77,11 @@ const MenuItem = ({ pizza }) => {
       <Typography variant="body2" color="orange" className="price-text">
         {formatCurrency(unitPrice)}
       </Typography>
-      {pizza.originalPrice && (
-        <del className="del">{formatCurrency(pizza.originalPrice)}</del>
+      {fooditem.originalPrice && (
+        <del className="del">{formatCurrency(fooditem.originalPrice)}</del>
       )}
       {isInCart && (
-        <UpdateItemQuantity pizzaId={id} quantity={currentQuantity} />
+        <UpdateItemQuantity fooditemId={_id} quantity={currentQuantity} />
       )}
     </Card>
   );

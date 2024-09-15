@@ -1,7 +1,7 @@
-const API_URL = "https://react-fast-pizza-api.onrender.com/api";
+const API_URL = "http://localhost:4000/api"; // Replace with your backend URL
 
 export async function getMenu() {
-  const res = await fetch(`${API_URL}/menu`);
+  const res = await fetch(`${API_URL}/food/list-food`); // Update endpoint as needed
 
   if (!res.ok) throw Error("Failed getting menu");
 

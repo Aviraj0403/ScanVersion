@@ -10,7 +10,7 @@ const EmptyCart = () => {
         &larr; Back to menu
       </Link>
       <p className="mt-7 font-semibold">
-        Your cart is still empty. Start adding some pizzas :)
+        Your cart is still empty. Start adding some food items :)
       </p>
     </div>
   );

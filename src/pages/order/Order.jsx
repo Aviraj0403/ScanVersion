@@ -1,5 +1,4 @@
 import OrderItem from "./OrderItem";
-
 import { useFetcher, useLoaderData } from "react-router-dom";
 import { getOrder } from "../../services/apiRestaurant";
 import {
@@ -14,12 +13,9 @@ const Order = () => {
   const order = useLoaderData();
   const fetcher = useFetcher();
 
-  useEffect(
-    function () {
-      if (!fetcher.data && fetcher.state === "idle") fetcher.load("/menu");
-    },
-    [fetcher],
-  );
+  useEffect(() => {
+    if (!fetcher.data && fetcher.state === "idle") fetcher.load("/menu");
+  }, [fetcher]);
 
   const isLoading = fetcher.state === "loading";
 
@@ -35,7 +31,7 @@ const Order = () => {
 
   const deliveryIn = calcMinutesLeft(estimatedDelivery);
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <>
         <div className="flex items-center">
@@ -91,6 +87,7 @@ const Order = () => {
         </div>
       </>
     );
+  }
 
   return (
     <div className="space-y-8 px-4 py-6">
@@ -112,7 +109,7 @@ const Order = () => {
       <div className="flex flex-wrap items-center justify-between gap-2 bg-stone-200 px-6 py-5">
         <p className="font-medium">
           {deliveryIn >= 0
-            ? `Only ${calcMinutesLeft(estimatedDelivery)} minutes left 😃`
+            ? `Only ${deliveryIn} minutes left 😃`
             : "Order should have arrived"}
         </p>
         <p className="text-xs text-stone-500">
@@ -120,19 +117,19 @@ const Order = () => {
         </p>
       </div>
 
-      <ul className="dive-stone-200 divide-y border-b border-t">
+      <ul className="divide-stone-200 divide-y border-b border-t">
         {cart.map((item) => (
-          <OrderItem item={item} key={item.pizzaId} />
+          <OrderItem item={item} key={item.foodItemId} />
         ))}
       </ul>
 
       <div className="space-y-2 bg-stone-200 px-6 py-5">
         <p className="text-sm font-medium text-stone-600">
-          Price pizza: {formatCurrency(orderPrice)}
+          Price of items: {formatCurrency(orderPrice)}
         </p>
         {priority && (
           <p className="text-sm font-medium text-stone-600">
-            Price priority: {formatCurrency(priorityPrice)}
+            Price for priority: {formatCurrency(priorityPrice)}
           </p>
         )}
         <p className="font-bold">
