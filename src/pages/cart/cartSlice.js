@@ -7,25 +7,35 @@ const cartSlice = createSlice({
   },
   reducers: {
     addItem: (state, action) => {
-      state.cart.push(action.payload); // payload = newItem
+      // Check if the item already exists in the cart
+      const existingItem = state.cart.find(item => item.fooditemId === action.payload.fooditemId);
+      
+      if (existingItem) {
+        // If the item is already in the cart, increase its quantity
+        existingItem.quantity += action.payload.quantity;
+        existingItem.totalPrice = existingItem.quantity * existingItem.price;
+      } else {
+        // Otherwise, add the new item to the cart
+        state.cart.push(action.payload); // payload = newItem
+      }
     },
     removeItem: (state, action) => {
-      state.cart = state.cart.filter((item) => item.fooditemId !== action.payload); // payload = fooditemId
+      state.cart = state.cart.filter(item => item.fooditemId !== action.payload); // payload = fooditemId
     },
     increaseItem: (state, action) => {
-      const item = state.cart.find((item) => item.fooditemId === action.payload);
+      const item = state.cart.find(item => item.fooditemId === action.payload);
       
       if (item) {
         item.quantity++;
-        item.totalPrice = item.quantity * item.unitPrice;
+        item.totalPrice = item.quantity * item.price; // Use 'price' instead of 'unitPrice'
       }
     },
     decreaseItem: (state, action) => {
-      const item = state.cart.find((item) => item.fooditemId === action.payload);
+      const item = state.cart.find(item => item.fooditemId === action.payload);
 
       if (item) {
         item.quantity--;
-        item.totalPrice = item.quantity * item.unitPrice;
+        item.totalPrice = item.quantity * item.price; // Use 'price' instead of 'unitPrice'
 
         if (item.quantity === 0) {
           cartSlice.caseReducers.removeItem(state, action);
@@ -38,11 +48,11 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addItem, removeItem, increaseItem, decreaseItem, clearCart } =
-  cartSlice.actions;
+export const { addItem, removeItem, increaseItem, decreaseItem, clearCart } = cartSlice.actions;
 
 export default cartSlice.reducer;
 
+// Selectors
 export const getCart = (state) => state.cart.cart;
 
 export const getTotalCartQuantity = (state) =>

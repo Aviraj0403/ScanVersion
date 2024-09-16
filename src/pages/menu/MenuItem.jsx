@@ -11,7 +11,7 @@ import './menuItem.css';
 
 const MenuItem = ({ fooditem }) => {
   const dispatch = useDispatch();
-  const { _id, name, unitPrice, ingredients, soldOut, imageUrl, discount } = fooditem;
+  const { _id, name, price, description, ingredients, soldOut, imageUrl, discount } = fooditem;
   const currentQuantity = useSelector(getCurrentQuantityById(_id));
   const isInCart = currentQuantity > 0;
 
@@ -30,8 +30,8 @@ const MenuItem = ({ fooditem }) => {
       fooditemId: _id,
       name,
       quantity: 1,
-      unitPrice,
-      totalPrice: unitPrice * 1,
+      price, // Use 'price' from backend
+      totalPrice: price * 1,
     };
     dispatch(addItem(newItem));
     set({ opacity: 0, transform: 'scale(1.2)' });
@@ -75,7 +75,7 @@ const MenuItem = ({ fooditem }) => {
         {ingredients?.join(', ')}
       </Typography>
       <Typography variant="body2" color="orange" className="price-text">
-        {formatCurrency(unitPrice)}
+        {formatCurrency(price)}
       </Typography>
       {fooditem.originalPrice && (
         <del className="del">{formatCurrency(fooditem.originalPrice)}</del>

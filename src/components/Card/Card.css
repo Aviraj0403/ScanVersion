@@ -16,7 +16,7 @@
 
 /* Hover effect for the card */
 .food-menu-card:hover {
-  transform: scale(1.03);
+  transform: scale(1);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   background-color: var(--light-orange);
 }
@@ -77,7 +77,7 @@
 /* Show button on card hover */
 .food-menu-card:hover .food-menu-btn {
   opacity: 1;
-  transform: translateX(-50%) scale(1.1);
+  transform: translateX(-50%) ;
 }
 
 /* Card content styling */
