@@ -39,7 +39,7 @@ const AppLayout = () => {
 
       <main
         style={{ marginTop: headerHeight }}
-        className="mx-auto max-w-screen-xl "
+        className="mx-auto max-w-screen "
       >
         <Outlet />
       </main>
