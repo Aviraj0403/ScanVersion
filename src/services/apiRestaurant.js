@@ -50,3 +50,17 @@ export async function updateOrder(id, updateObj) {
     throw Error("Failed updating your order");
   }
 }
+// Add this function to your apiRestaurant.js
+// services/apiRestaurant.js
+export const getFoodsByCategory = async (category) => {
+  try {
+    const response = await fetch(`${API_URL}/food/category/${category}`);
+    if (!response.ok) {
+      throw new Error('Error fetching foods by category');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching foods by category:', error);
+    throw error; // Re-throw the error to be handled by the calling function
+  }
+};

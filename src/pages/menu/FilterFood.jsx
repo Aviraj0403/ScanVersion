@@ -1,64 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getMenu } from '../../services/apiRestaurant.js';
 
-// Sample food data
-const foodItems = [
-  { id: 1, name: 'Pancakes', category: 'Breakfast' },
-  { id: 2, name: 'Omelette', category: 'Breakfast' },
-  { id: 3, name: 'Sandwich', category: 'Lunch' },
-  { id: 4, name: 'Salad', category: 'Lunch' },
-  { id: 5, name: 'Steak', category: 'Dinner' },
-  { id: 6, name: 'Pasta', category: 'Dinner' },
-];
-
-function FoodCategoryFilter() {
+function FoodCategoryFilter({ onCategoryChange }) {
+  const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
 
-  // Filter the food items based on the selected category
-  const filteredFoodItems =
-    selectedCategory === 'All'
-      ? foodItems
-      : foodItems.filter((item) => item.category === selectedCategory);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getMenu(); // Fetch menu data from your API
+        const uniqueCategories = Array.from(new Set(data.map(item => item.category))); // Extract unique categories
+        setCategories(['All', ...uniqueCategories]); // Include 'All' to show all items
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+    onCategoryChange(category); // Notify parent of the category change
+  };
 
   return (
     <div>
-      <h1>Food Category Filter</h1>
+      <h1 className="text-xl font-bold mb-4">Food Category Filter</h1>
 
-      {/* Category Filter Buttons */}
       <div className="flex space-x-4 mb-4">
-        <button
-          onClick={() => setSelectedCategory('All')}
-          className="bg-gray-200 p-2 rounded-md"
-        >
-          All
-        </button>
-        <button
-          onClick={() => setSelectedCategory('Breakfast')}
-          className="bg-yellow-200 p-2 rounded-md"
-        >
-          Breakfast
-        </button>
-        <button
-          onClick={() => setSelectedCategory('Lunch')}
-          className="bg-green-200 p-2 rounded-md"
-        >
-          Lunch
-        </button>
-        <button
-          onClick={() => setSelectedCategory('Dinner')}
-          className="bg-blue-200 p-2 rounded-md"
-        >
-          Dinner
-        </button>
-      </div>
-
-      {/* Display Filtered Food Items */}
-      <ul>
-        {filteredFoodItems.map((food) => (
-          <li key={food.id} className="mb-2 p-2 border rounded-md">
-            {food.name} - {food.category}
-          </li>
+        {categories.map((category) => (
+          <button
+            key={category}
+            onClick={() => handleCategoryClick(category)}
+            className={`p-2 rounded-md ${selectedCategory === category ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          >
+            {category}
+          </button>
         ))}
-      </ul>
+      </div>
     </div>
   );
 }
