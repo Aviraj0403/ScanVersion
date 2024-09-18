@@ -1,9 +1,9 @@
 const API_URL = "http://localhost:4000/api"; // Replace with your backend URL
 
 export async function getMenu() {
-  const res = await fetch(`${API_URL}/food/list-food`); // Update endpoint as needed
+  const res = await fetch(`${API_URL}/food/list-food`);
 
-  if (!res.ok) throw Error("Failed getting menu");
+  if (!res.ok) throw new Error("Failed to get menu");
 
   const { data } = await res.json();
   return data;
@@ -11,7 +11,7 @@ export async function getMenu() {
 
 export async function getOrder(id) {
   const res = await fetch(`${API_URL}/order/${id}`);
-  if (!res.ok) throw Error(`Couldn't find order #${id}`);
+  if (!res.ok) throw new Error(`Couldn't find order #${id}`);
 
   const { data } = await res.json();
   return data;
@@ -27,11 +27,13 @@ export async function createOrder(newOrder) {
       },
     });
 
-    if (!res.ok) throw Error();
+    if (!res.ok) throw new Error("Failed to create your order");
+
     const { data } = await res.json();
     return data;
-  } catch {
-    throw Error("Failed creating your order");
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to create your order");
   }
 }
 
@@ -45,22 +47,27 @@ export async function updateOrder(id, updateObj) {
       },
     });
 
-    if (!res.ok) throw Error();
-  } catch (err) {
-    throw Error("Failed updating your order");
+    if (!res.ok) throw new Error("Failed to update your order");
+  } catch (error) {
+    console.error(error);
+    throw new Error("Failed to update your order");
   }
 }
-// Add this function to your apiRestaurant.js
-// services/apiRestaurant.js
-export const getFoodsByCategory = async (category) => {
+
+// Function to get foods by category and type
+export const getFoodsByCategoryAndType = async (category, itemType) => {
   try {
-    const response = await fetch(`${API_URL}/food/category/${category}`);
+    const itemTypePath = itemType ? itemType : ''; // Handle optional itemType
+    const response = await fetch(`${API_URL}/food/category/${category}/${itemTypePath}`);
+    
     if (!response.ok) {
-      throw new Error('Error fetching foods by category');
+      throw new Error('Error fetching foods by category and item type');
     }
-    return await response.json();
+
+    const { data } = await response.json();
+    return data;
   } catch (error) {
-    console.error('Error fetching foods by category:', error);
+    console.error('Error fetching foods by category and item type:', error);
     throw error; // Re-throw the error to be handled by the calling function
   }
 };
