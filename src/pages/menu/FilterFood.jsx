@@ -5,6 +5,7 @@ import { getMenu } from '../../services/apiRestaurant.js';
 
 function FoodCategoryFilter({ onCategoryChange }) {
   const [categories, setCategories] = useState([]);
+  const [filteredCategories, setFilteredCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [foodType, setFoodType] = useState('All');
   const [loading, setLoading] = useState(true);
@@ -17,6 +18,7 @@ function FoodCategoryFilter({ onCategoryChange }) {
         const data = await getMenu();
         const uniqueCategories = Array.from(new Set(data.map(item => item.category)));
         setCategories(['All', ...uniqueCategories]);
+        setFilteredCategories(['All', ...uniqueCategories]); // Initially show all categories
       } catch (error) {
         console.error('Error fetching categories:', error);
         setError('Failed to load categories');
@@ -26,6 +28,26 @@ function FoodCategoryFilter({ onCategoryChange }) {
     };
     fetchCategories();
   }, []);
+
+  useEffect(() => {
+    // Filter categories based on the selected food type
+    const fetchFilteredCategories = async () => {
+      if (foodType === 'All') {
+        setFilteredCategories(categories);
+      } else {
+        try {
+          const data = await getMenu();
+          const filtered = data.filter(item => item.itemType === foodType).map(item => item.category);
+          const uniqueFilteredCategories = Array.from(new Set(filtered));
+          setFilteredCategories(uniqueFilteredCategories.length > 0 ? uniqueFilteredCategories : ['All']);
+        } catch (error) {
+          console.error('Error fetching filtered categories:', error);
+          setError('Failed to filter categories');
+        }
+      }
+    };
+    fetchFilteredCategories();
+  }, [foodType, categories]);
 
   const handleCategoryClick = async (category) => {
     setSelectedCategory(category);
@@ -38,8 +60,9 @@ function FoodCategoryFilter({ onCategoryChange }) {
 
   const handleFoodTypeClick = async (type) => {
     setFoodType(type);
+    setSelectedCategory('All'); // Reset category when changing food type
     try {
-      await onCategoryChange(selectedCategory, type);
+      await onCategoryChange('All', type);
     } catch (error) {
       console.error('Error changing food type:', error);
     }
@@ -79,7 +102,7 @@ function FoodCategoryFilter({ onCategoryChange }) {
         className="menu-swiper"
         style={{ direction: 'ltr' }} // Apply LTR styling
       >
-        {categories.map((category) => (
+        {filteredCategories.map((category) => (
           <SwiperSlide key={category} className="!w-fit">
             <button
               onClick={() => handleCategoryClick(category)}
