@@ -25,7 +25,7 @@ function FoodCategoryFilter({ onCategoryChange }) {
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-4">Food Category Filter</h1>
+
 
       <div className="flex space-x-4 mb-4">
         {categories.map((category) => (

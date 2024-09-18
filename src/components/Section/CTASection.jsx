@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const CTASection = () => (
   <section
@@ -15,9 +16,9 @@ const CTASection = () => (
           The restaurants in Hangzhou also catered to many northern Chinese who had fled south from Kaifeng during
           the Jurchen invasion of the 1120s, while it is also known that many restaurants were run by families.
         </p>
-        <button className="bg-orange-500 text-white px-4 py-2 md:px-6 md:py-3 rounded hover:bg-orange-600 transition duration-300">
-          Order Now
-        </button>
+        <Link to="/menu" className="bg-orange-500 text-white px-4 py-2 md:px-6 md:py-3 rounded hover:bg-orange-600 transition duration-300">
+        Order Now
+      </Link>
       </div>
       <figure className="relative mt-6 md:mt-8 max-w-4xl">
         <img src="src\assets\images\cta-banner.png" alt="Burger" className="w-full h-auto object-cover mx-auto" />
