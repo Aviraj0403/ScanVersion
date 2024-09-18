@@ -9,6 +9,7 @@ const Menu = () => {
   const [menu, setMenu] = useState([]);
   const [filteredMenu, setFilteredMenu] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [foodType, setFoodType] = useState('All');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,16 +24,22 @@ const Menu = () => {
   }, [initialMenuData]);
 
   useEffect(() => {
-    if (selectedCategory === 'All') {
-      setFilteredMenu(menu);
-    } else {
-      const filtered = menu.filter(item => item.category === selectedCategory);
-      setFilteredMenu(filtered);
-    }
-  }, [selectedCategory, menu]);
+    let filtered = menu;
 
-  const handleCategoryChange = (category) => {
+    if (selectedCategory !== 'All') {
+      filtered = filtered.filter(item => item.category === selectedCategory);
+    }
+
+    if (foodType !== 'All') {
+      filtered = filtered.filter(item => item.itemType === foodType);
+    }
+
+    setFilteredMenu(filtered);
+  }, [selectedCategory, foodType, menu]);
+
+  const handleCategoryChange = (category, type) => {
     setSelectedCategory(category);
+    setFoodType(type); // Update food type when category changes
   };
 
   if (loading) {
@@ -42,7 +49,7 @@ const Menu = () => {
   return (
     <div>
       <FoodCategoryFilter onCategoryChange={handleCategoryChange} />
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 border-t border-gray-300 pt-4">
         {filteredMenu.length > 0 ? (
           filteredMenu.map(item => (
             <MenuItem key={item._id} fooditem={item} />
