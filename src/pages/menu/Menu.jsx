@@ -1,28 +1,27 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLoaderData } from 'react-router-dom';
 import MenuItem from './MenuItem.jsx';
-import FoodCategoryFilter from './FilterFood.jsx'; // Ensure the correct path
+import FoodCategoryFilter from './FilterFood.jsx';
 import { getMenu } from '../../services/apiRestaurant.js';
 
-
 const Menu = () => {
-  const initialMenuData = useLoaderData(); // Fetch data from loader
+  const initialMenuData = useLoaderData();
   const [menu, setMenu] = useState([]);
   const [filteredMenu, setFilteredMenu] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [loading, setLoading] = useState(true);
 
-  // Initialize menu state
   useEffect(() => {
     if (Array.isArray(initialMenuData) && initialMenuData.length > 0) {
       setMenu(initialMenuData);
       setFilteredMenu(initialMenuData);
+      setLoading(false); // Set loading to false once data is set
     } else {
       console.error('Invalid menu data:', initialMenuData);
+      setLoading(false);
     }
   }, [initialMenuData]);
 
-  // Filter menu items based on the selected category
   useEffect(() => {
     if (selectedCategory === 'All') {
       setFilteredMenu(menu);
@@ -35,6 +34,10 @@ const Menu = () => {
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
   };
+
+  if (loading) {
+    return <p>Loading menu...</p>; // Loading state
+  }
 
   return (
     <div>
@@ -52,15 +55,13 @@ const Menu = () => {
   );
 };
 
-
-
 export async function loader() {
   try {
     const menu = await getMenu();
-    return menu; // Ensure loader returns menu data
+    return menu;
   } catch (error) {
     console.error('Error loading menu:', error);
-    return []; // Return an empty array in case of an error
+    return [];
   }
 }
 
