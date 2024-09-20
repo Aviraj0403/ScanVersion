@@ -129,3 +129,36 @@
         height: 30px;
     }
 }
+
+
+.background-div {
+    background-image: url('https://i.pinimg.com/originals/44/ea/09/44ea09cf172b56c1dc379b8522329a51.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none,
+}
+
+.category-div{
+    background-image: url('https://img.freepik.com/premium-photo/food-background-menu-with-spices-culinary-ingredients-dark-stone-background-cooking-concepts-culinary-background-top-view-free-space-your-text_234595-2347.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    border: none,
+
+}
+
+.menu-page{
+    background-image: url('https://img.freepik.com/premium-photo/food-background-menu-with-spices-culinary-ingredients-dark-stone-background-cooking-concepts-culinary-background-top-view-free-space-your-text_234595-2347.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    border: none,
+
+}
+
+.card-div{
+    border: none;
+}

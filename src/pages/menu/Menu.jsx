@@ -47,9 +47,9 @@ const Menu = () => {
   }
 
   return (
-    <div>
+    <div className='menu-page'>
       <FoodCategoryFilter onCategoryChange={handleCategoryChange} />
-      <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 border-t border-gray-300 pt-4">
+      <div className="card-div mt-2 mb-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 border-t border-gray-300 pt-2 pb-4">
         {filteredMenu.length > 0 ? (
           filteredMenu.map(item => (
             <MenuItem key={item._id} fooditem={item} />

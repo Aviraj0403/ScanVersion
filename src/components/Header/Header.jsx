@@ -66,7 +66,6 @@ const Header = () => {
           maxWidth: "1200px",
           width: "100%",
           mx: "auto",
-          p: "0.5rem",
           flexDirection: isMobile ? "column" : "row",
         }}
       >

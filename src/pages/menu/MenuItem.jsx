@@ -64,6 +64,7 @@ const MenuItem = ({ fooditem }) => {
       onButtonClick={isInCart ? handleRemoveFromCart : handleAddToCart}
       buttonText={isInCart ? "Remove" : "Order Now"}
       onButtonClickDisabled={soldOut || isButtonDisabled}
+      style={{marginBottom:2}}
     >
       <animated.div style={props} className="rating-wrapper">
         <StarRating

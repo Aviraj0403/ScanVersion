@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css'; // Import Swiper styles
 import { getMenu } from '../../services/apiRestaurant.js';
 import { Navigation, Pagination } from 'swiper/modules'; // Import modules if needed
+import './menuItem.css';
 
 function FoodCategoryFilter({ onCategoryChange }) {
   const [categories, setCategories] = useState([]);
@@ -72,11 +73,11 @@ function FoodCategoryFilter({ onCategoryChange }) {
   if (error) return <p>{error}</p>;
 
   return (
-    <div className="mb-7">
-      <div className="flex flex-wrap gap-3 w-full mb-5 veg-navs border-b border-gray-300 pb-4">
+    <div className="category-div mb-7 ">
+      <div className="background-div flex flex-wrap gap-3 w-full mb-5 py-4 veg-navs border-b border-gray-300 pb-3 ">
 
       <button
-          className={`flex items-center gap-3 w-fit pl-3 pr-4 py-2 rounded-full transition transform hover:scale-105 hover:shadow-lg ${foodType === 'Veg' ? 'bg-green-500 text-white' : 'bg-[#EFF0F6] text-heading'}`}
+          className={`flex items-center gap-5 w-fit pl-3 pr-4 py-2 rounded-full transition transform hover:scale-105 hover:shadow-lg ${foodType === 'Veg' ? 'bg-green-500 text-white' : 'bg-[#EFF0F6] text-heading'}`}
           type="button"
           onClick={() => handleFoodTypeClick('Veg')}
           aria-pressed={foodType === 'Veg'}
@@ -98,12 +99,12 @@ function FoodCategoryFilter({ onCategoryChange }) {
       </div>
       
       <Swiper
-        modules={[Navigation, Pagination]} // Enable navigation and pagination if needed
+        modules={[Navigation, Pagination]} // Enab, le navigation and pagination if needed
         direction="horizontal"
         slidesPerView="auto"
         spaceBetween={12}
         className="menu-swiper"
-        style={{ direction: 'ltr' }} // Apply LTR styling
+        style={{ direction: 'ltr', padding:4 }} // Apply LTR styling
         pagination={{ clickable: true }} // Enable pagination
         navigation // Enable navigation arrows
       >
@@ -117,7 +118,7 @@ function FoodCategoryFilter({ onCategoryChange }) {
             >
               <img 
                 className="h-10 drop-shadow-category mb-1"
-                src={`https://example.com/icons/${category.toLowerCase().replace(/\s+/g, '-')}.png`} // Ensure this URL is correct
+                src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSB8N27tkV9kQ8toUQMw26UkRiHaL8W_81Bng&s`} // Ensure this URL is correct
                 alt={category}
               />
               <h3 className="text-xs leading-4 whitespace-nowrap overflow-hidden text-ellipsis font-medium font-rubik">
