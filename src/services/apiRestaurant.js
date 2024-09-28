@@ -1,4 +1,4 @@
-const API_URL =  "http://localhost:4000/api";
+const API_URL =  "http://localhost:4000/api/food/66f2f1c8f2696a3714a2d1ad";
 
 async function fetchData(url, options = {}) {
   const res = await fetch(url, options);
@@ -10,7 +10,7 @@ async function fetchData(url, options = {}) {
 }
 
 export async function getMenu() {
-  const { data } = await fetchData(`${API_URL}/food/list-food`);
+  const { data } = await fetchData(`${API_URL}/list-food`);
   return data;
 }
 
@@ -37,6 +37,6 @@ export async function updateOrder(id, updateObj) {
 }
 
 export const getFoodsByCategoryAndType = async (category, itemType = '') => {
-  const { data } = await fetchData(`${API_URL}/food/category/${category}/${itemType}`);
+  const { data } = await fetchData(`${API_URL}/category/${category}/${itemType}`);
   return data;
 };
