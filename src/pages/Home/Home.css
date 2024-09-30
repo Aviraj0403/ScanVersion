@@ -1,5 +1,50 @@
 
 
+/* Slider container */
+.slider-container {
+
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 20px auto; /* Center the slider */
+}
+
+.slider-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: opacity 1s ease-in-out;
+}
+
+/* Slider dots (point indicators) */
+.slider-dots {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.dot {
+  height: 12px;
+  width: 12px;
+  margin: 0 5px;
+  background-color: #c08e8e;
+  border-radius: 50%;
+  display: inline-block;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dot.active {
+  background-color: #ff7f50; /* Active dot color */
+}
+
+.dot:hover {
+  background-color: #ff7f50; /* Change dot color on hover */
+}
+
+
+
+
 .home-container {
   display: flex;
   flex-direction: column;

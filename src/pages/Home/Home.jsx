@@ -1,14 +1,29 @@
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import CreateUser from '../user/CreateUser';
 import { Link } from 'react-router-dom';
-import  CTASection  from '../../components/Section/CTASection';
-import  DeliverySection  from '../../components/Section/DeliverySection';
-import  TestimonialsSection from '../../components/Section/TestimonialsSection'
-// import { CTASection, DeliverySection, TestimonialsSection } from './Section'; // Import the sections
+import CTASection from '../../components/Section/CTASection';
+import DeliverySection from '../../components/Section/DeliverySection';
+import TestimonialsSection from '../../components/Section/TestimonialsSection';
+import './Home.css'; // Import CSS for slider
+
+const images = [
+  '/src/assets/slideimg/slide1.jpeg',
+  '/src/assets/slideimg/slide2.jpeg',
+  '/src/assets/slideimg/slide3.jpeg',
+];
 
 const Home = () => {
   const username = useSelector((state) => state.user.name);
+  const [currentImage, setCurrentImage] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prevImage) => (prevImage + 1) % images.length);
+    }, 3000); // Change image every 3 seconds
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-100">
@@ -25,19 +40,27 @@ const Home = () => {
             Continue ordering, {username}!
           </Link>
         )}
+
+        {/* Image Slider Section */}
+        <div className="slider-container">
+          <img src={images[currentImage]} alt="Restaurant slide" className="slider-image" />
+          <div className="slider-dots">
+            {images.map((_, index) => (
+              <span
+                key={index}
+                className={`dot ${index === currentImage ? 'active' : ''}`}
+                onClick={() => setCurrentImage(index)}
+              ></span>
+            ))}
+          </div>
+        </div>
       </header>
 
       <div>
-    <CTASection />
-    <DeliverySection />
-    <TestimonialsSection />
-  </div>
-      <main className="flex-grow">
-     
-        {/* <CTASection /> */}
-        {/* <DeliverySection /> */}
-        {/* <TestimonialsSection /> */}
-      </main>
+        <CTASection />
+        <DeliverySection />
+        <TestimonialsSection />
+      </div>
     </div>
   );
 };
