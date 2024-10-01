@@ -9,14 +9,14 @@
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
   max-width: 100%; /* Card should take up available width */
-  margin: auto;
+  margin: 10px auto; /* Add margin for spacing */
   cursor: pointer;
   box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
 /* Hover effect for the card */
 .food-menu-card:hover {
-  transform: scale(1);
+  transform: scale(1.02);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   background-color: var(--light-orange);
 }
@@ -77,7 +77,7 @@
 /* Show button on card hover */
 .food-menu-card:hover .food-menu-btn {
   opacity: 1;
-  transform: translateX(-50%) ;
+  transform: translateX(-50%);
 }
 
 /* Card content styling */
@@ -88,30 +88,28 @@
 }
 
 /* Responsive Design */
+.container {
+  display: flex;
+  flex-wrap: wrap; /* Allow wrapping */
+  justify-content: center; /* Center align cards */
+}
+
+/* General card adjustments for responsiveness */
 @media (max-width: 1200px) {
   .food-menu-card {
-    max-width: 90%;
-  }
-
-  .food-menu-btn {
-    width: 80%;
+    max-width: 45%; /* Two cards per row */
   }
 }
 
 @media (max-width: 992px) {
   .food-menu-card {
-    padding: 12px;
-  }
-
-  .food-menu-btn {
-    width: 85%;
-    font-size: 0.95rem;
+    max-width: 48%; /* Two cards per row */
   }
 }
 
 @media (max-width: 768px) {
   .food-menu-card {
-    padding: 10px;
+    max-width: 100%; /* One card per row */
   }
 
   .food-menu-btn {
