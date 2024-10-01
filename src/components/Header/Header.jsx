@@ -48,7 +48,6 @@ const Header = () => {
     <>
       <AppBar
         position="fixed"
-        className="header"
         sx={{
           backgroundColor: trigger ? "#004353" : "#fff",
           color: trigger ? "#fff" : "#111",
@@ -66,7 +65,6 @@ const Header = () => {
             maxWidth: "1200px",
             width: "100%",
             mx: "auto",
-            flexDirection: isMobile ? "row" : "row",
             padding: isMobile ? '0 10px' : '0', // Adjust padding for mobile
           }}
         >
@@ -83,11 +81,11 @@ const Header = () => {
             </Box>
           </Link>
 
-          {/* Search Input Always Visible on Large Screens */}
+          {/* Search Input */}
           <Box
             sx={{
               flexGrow: 1,
-              display: isMobile ? "none" : "flex", // Hide search input in mobile
+              display: "flex",
               justifyContent: "center",
               mt: 1,
             }}
@@ -101,41 +99,12 @@ const Header = () => {
                 py: 0.5,
                 bgcolor: "grey.100",
                 borderRadius: 50,
-                width: "100%",
-                maxWidth: 300,
+                width: isMobile ? "100%" : "300px", // Full width on mobile
                 transition: "all 0.3s ease",
                 "&:hover": { bgcolor: "grey.200", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" },
               }}
             />
           </Box>
-
-          {/* Mobile View Search Bar */}
-          {isMobile && (
-            <Box
-              sx={{
-                flexGrow: 1,
-                display: "flex",
-                justifyContent: "center",
-                mt: 1,
-              }}
-            >
-              <InputBase
-                placeholder="Search…"
-                startAdornment={<SearchIcon sx={{ color: "gray", mr: 1 }} />}
-                sx={{
-                  pl: 2,
-                  pr: 4,
-                  py: 0.5,
-                  bgcolor: "grey.100",
-                  borderRadius: 50,
-                  width: "100%",
-                  maxWidth: 300,
-                  transition: "all 0.3s ease",
-                  "&:hover": { bgcolor: "grey.200", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" },
-                }}
-              />
-            </Box>
-          )}
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <IconButton

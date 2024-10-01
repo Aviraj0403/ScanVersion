@@ -11,12 +11,11 @@ import './menuItem.css';
 
 const MenuItem = ({ fooditem }) => {
   const dispatch = useDispatch();
-  const { _id, name, price, description, ingredients, soldOut, imageUrl, discount } = fooditem;
+  const { _id, name, price, ingredients, soldOut, imageUrl, discount } = fooditem;
   const currentQuantity = useSelector(getCurrentQuantityById(_id));
   const isInCart = currentQuantity > 0;
 
   const [isButtonDisabled, setButtonDisabled] = useState(false);
-
   const [props, set] = useSpring(() => ({
     opacity: 1,
     transform: 'scale(1)',
@@ -30,8 +29,8 @@ const MenuItem = ({ fooditem }) => {
       fooditemId: _id,
       name,
       quantity: 1,
-      price, // Use 'price' from backend
-      totalPrice: price * 1,
+      price,
+      totalPrice: price,
     };
     dispatch(addItem(newItem));
     set({ opacity: 0, transform: 'scale(1.2)' });
@@ -50,10 +49,6 @@ const MenuItem = ({ fooditem }) => {
     setTimeout(() => setButtonDisabled(false), 300);
   };
 
-  const handleRatingChange = (newRating) => {
-    console.log('New rating:', newRating);
-  };
-
   return (
     <Card
       imageUrl={imageUrl}
@@ -64,13 +59,9 @@ const MenuItem = ({ fooditem }) => {
       onButtonClick={isInCart ? handleRemoveFromCart : handleAddToCart}
       buttonText={isInCart ? "Remove" : "Order Now"}
       onButtonClickDisabled={soldOut || isButtonDisabled}
-      style={{marginBottom:2}}
     >
       <animated.div style={props} className="rating-wrapper">
-        <StarRating
-          rating={0}
-          onRatingChange={handleRatingChange}
-        />
+        <StarRating rating={0} onRatingChange={() => {}} />
       </animated.div>
       <Typography variant="body2" color="text.secondary" sx={{ marginTop: 1 }}>
         {ingredients?.join(', ')}

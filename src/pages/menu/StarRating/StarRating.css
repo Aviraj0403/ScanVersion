@@ -1,16 +1,14 @@
-/* starRating.css */
 .star-rating {
-    display: flex;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
-  
-  .star {
-    transition: color 0.2s;
-    color: var(--gray);
-  }
-  
-  .star.filled {
-    color: var(--deep-saffron);
-  }
-  
+  display: flex;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.star {
+  transition: color 0.2s;
+  color: var(--gray);
+}
+
+.star.filled {
+  color: var(--deep-saffron);
+}

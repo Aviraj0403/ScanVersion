@@ -1,131 +1,90 @@
-/* Main card styling */
 .food-menu-card {
-  background-color: var(--white);
-  padding: 15px;
-  box-shadow: var(--shadow-2);
-  border: 1px solid var(--border-color, var(--cultured));
+  background-color: #fff;
+  padding: 16px;
   border-radius: 8px;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
-  max-width: 100%; /* Card should take up available width */
-  margin: 10px auto; /* Add margin for spacing */
-  cursor: pointer;
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+  max-width: 300px;
+  margin: auto;
 }
 
-/* Hover effect for the card */
 .food-menu-card:hover {
-  transform: scale(1.02);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-  background-color: var(--light-orange);
+  transform: scale(1.03);
 }
 
-/* Card banner styling */
 .card-banner {
   position: relative;
-  width: 100%;
-  overflow: hidden;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
-/* Image styling */
 .card-image {
   width: 100%;
-  height: auto; /* Adjust height to maintain aspect ratio */
-  object-fit: cover; /* Ensure the image covers the area */
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
-/* Badge styling */
 .badge {
   position: absolute;
   top: 10px;
   left: 10px;
-  background-color: var(--deep-saffron);
-  color: var(--white);
+  background-color: #f39c12;
+  color: #fff;
   padding: 5px 10px;
-  font-weight: bold;
   border-radius: 5px;
 }
 
-/* Order Now button styling */
 .food-menu-btn {
   position: absolute;
   bottom: 15px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: var(--cinnabar);
-  color: var(--white);
+  background-color: #e74c3c;
+  color: #fff;
   width: 70%;
-  height: 35px;
-  text-align: center;
-  line-height: 35px;
-  opacity: 0;
-  transition: opacity 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
-  border: none;
-  cursor: pointer;
   border-radius: 20px;
-  font-weight: bold;
+  transition: background-color 0.3s;
 }
 
-/* Button color on hover */
-.food-menu-btn:hover,
-.food-menu-btn:focus {
-  background-color: var(--deep-saffron);
+.food-menu-btn.disabled {
+  opacity: 0.5;
 }
 
-/* Show button on card hover */
-.food-menu-card:hover .food-menu-btn {
-  opacity: 1;
-  transform: translateX(-50%);
+.food-menu-btn:hover:not(.disabled) {
+  background-color: #c0392b;
 }
 
-/* Card content styling */
-.card-title {
-  margin-bottom: 10px;
-  font-size: 1.1rem;
-  font-weight: bold;
-}
-
-/* Responsive Design */
-.container {
+.card-content {
   display: flex;
-  flex-wrap: wrap; /* Allow wrapping */
-  justify-content: center; /* Center align cards */
+  flex-direction: column;
+  align-items: center;
 }
 
-/* General card adjustments for responsiveness */
-@media (max-width: 1200px) {
-  .food-menu-card {
-    max-width: 45%; /* Two cards per row */
-  }
+.card-title {
+  font-weight: bold;
+  margin: 8px 0;
 }
 
-@media (max-width: 992px) {
-  .food-menu-card {
-    max-width: 48%; /* Two cards per row */
-  }
+.card-subtitle {
+  margin-top: 4px;
 }
 
+/* Responsive Styles */
 @media (max-width: 768px) {
   .food-menu-card {
-    max-width: 100%; /* One card per row */
+    max-width: 90%;
+    padding: 12px;
   }
-
   .food-menu-btn {
-    width: 90%;
-    font-size: 0.9rem;
+    width: 80%;
   }
 }
 
 @media (max-width: 576px) {
   .food-menu-card {
-    padding: 8px;
+    padding: 10px;
   }
-
   .food-menu-btn {
-    width: 95%;
-    font-size: 0.85rem;
-    height: 30px;
+    width: 90%;
   }
 }
