@@ -1,5 +1,6 @@
 const API_URL = "http://localhost:4000/api/food/66f2f1c8f2696a3714a2d1ad"; // Hardcoded food API URL
 const TABLE_API_URL = "http://localhost:4000/api/table/66f2f1c8f2696a3714a2d1ad/get-active"; // Hardcoded restaurant ID for table API
+const OFFER_API_URL = "http://localhost:4000/api/offer/66f2f1c8f2696a3714a2d1ad/get-active"; // Corrected URL
 
 async function fetchData(url, options = {}) {
   const res = await fetch(url, options);
@@ -60,5 +61,21 @@ export const fetchActiveDiningTables = async () => {
   }
 };
 
-// Example usage
-fetchActiveDiningTables();
+// Offer API Functions
+export async function getOffer(status) {
+  const url = status ? `${OFFER_API_URL}?status=${status}` : OFFER_API_URL; // Ensure the status can be appended if needed
+  const { data } = await fetchData(url);
+  return data;
+}
+
+// Fetch Active Offers
+export const fetchActiveOffer = async () => {
+  try {
+    return await getOffer('Active'); // Fetching active offers
+  } catch (error) {
+    console.error('Failed to fetch active offers:', error.message);
+  }
+};
+
+// Example usage to fetch offers
+fetchActiveOffer();
