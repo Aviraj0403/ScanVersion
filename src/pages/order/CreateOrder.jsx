@@ -12,12 +12,11 @@ const isValidPhone = (str) =>
 
 const CreateOrder = () => {
   const [withPriority, setWithPriority] = useState(false);
-  const [activeTables, setActiveTables] = useState([]); // Ensure this is initialized as an empty array
-  const [activeOffers, setActiveOffers] = useState([]); // Ensure this is initialized as an empty array
+  const [activeTables, setActiveTables] = useState([]);
+  const [activeOffers, setActiveOffers] = useState([]);
   const [selectedTable, setSelectedTable] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
-  const { username, status: addressStatus } = useSelector((state) => state.user);
-  const isLoadingAddress = addressStatus === "loading";
+  const { username } = useSelector((state) => state.user);
   const navigation = useNavigation();
   const isSubmitting = navigation.state === "submitting";
   const formErrors = useActionData();
@@ -25,13 +24,14 @@ const CreateOrder = () => {
   const cart = useSelector((state) => state.cart.cart);
   const totalCartPrice = useSelector(getTotalCartPrice);
   const priorityPrice = withPriority ? totalCartPrice * 0.2 : 0;
-  const totalPrice = totalCartPrice + priorityPrice - (selectedOffer ? (totalCartPrice * selectedOffer.discountPercentage / 100) : 0);
+  const offerDiscount = selectedOffer ? (Number(selectedOffer.discountPercentage) || 0) : 0;
+  const totalPrice = totalCartPrice + priorityPrice - (totalCartPrice * offerDiscount / 100);
 
   useEffect(() => {
     const fetchTables = async () => {
       try {
         const tables = await fetchActiveDiningTables();
-        setActiveTables(tables || []); // Ensure we set an empty array if tables is undefined
+        setActiveTables(tables || []);
       } catch (error) {
         console.error('Failed to fetch active tables:', error);
       }
@@ -40,7 +40,7 @@ const CreateOrder = () => {
     const fetchOffersData = async () => {
       try {
         const offers = await fetchActiveOffer();
-        setActiveOffers(offers || []); // Ensure we set an empty array if offers is undefined
+        setActiveOffers(offers || []);
       } catch (error) {
         console.error('Failed to fetch offers:', error);
       }
@@ -57,30 +57,41 @@ const CreateOrder = () => {
   };
 
   const handleOfferSelect = (offerId) => {
-    setSelectedOffer((prev) => (prev === offerId ? null : offerId));
+    if (selectedOffer && selectedOffer._id === offerId) {
+      setSelectedOffer(null);
+    } else {
+      const selected = activeOffers.find((offer) => offer._id === offerId);
+      setSelectedOffer(selected || null);
+    }
+  };
+
+  const handleOfferDoubleClick = (offerId) => {
+    if (selectedOffer && selectedOffer._id === offerId) {
+      setSelectedOffer(null);
+    }
   };
 
   return (
-    <div className="px-4 py-6 bg-white rounded shadow-md">
+    <div className="px-4 py-6 bg-white rounded shadow-md max-w-md mx-auto">
       <h2 className="mb-8 text-2xl font-semibold text-center">Ready to order? Let&apos;s go!</h2>
 
       <Form method="POST">
-        <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
-          <label className="sm:basis-40">First Name</label>
+        <div className="mb-5">
+          <label className="block mb-2 text-sm font-medium text-gray-700">First Name</label>
           <input
-            className="input grow border p-2 rounded"
+            className="border border-gray-300 rounded-lg shadow-sm p-2 w-full focus:ring focus:ring-orange-400 focus:outline-none transition duration-150"
             type="text"
             name="customer"
             required
-            placeholder="e.g. John Doe"
+            placeholder="e.g. BrTech"
             defaultValue={username || ''}
           />
         </div>
 
-        <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
-          <label className="sm:basis-40">Phone number</label>
+        <div className="mb-5">
+          <label className="block mb-2 text-sm font-medium text-gray-700">Phone Number</label>
           <input
-            className="input w-full border p-2 rounded"
+            className="border border-gray-300 rounded-lg shadow-sm p-2 w-full focus:ring focus:ring-orange-400 focus:outline-none transition duration-150"
             type="tel"
             name="phone"
             required
@@ -88,91 +99,82 @@ const CreateOrder = () => {
             defaultValue=""
           />
           {formErrors?.phone && (
-            <p className="mt-2 bg-red-100 text-red-700 p-2 text-xs rounded-md">
-              {formErrors.phone}
-            </p>
+            <p className="mt-2 text-red-600 text-xs">{formErrors.phone}</p>
           )}
         </div>
 
         {/* Table Selection */}
-        <div className="relative mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
-          <label className="sm:basis-40">Select Table</label>
-          <div className="grow">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {activeTables.map((table) => (
-                <div
-                  key={table.tableId}
-                  className={`p-4 border rounded-md cursor-pointer transition duration-200 ${selectedTable === table.tableId ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
-                  onClick={() => handleTableSelect(table.tableId)}
-                  onDoubleClick={() => handleTableSelect(table.tableId)}
-                >
-                  <h3 className="font-medium">{table.name}</h3>
-                  <p className="text-sm">Size: {table.size}</p>
-                  <span className="block mt-1 text-gray-500 text-xs italic">
-                    {selectedTable === table.tableId ? "Selected" : "Click to select this table"}
-                  </span>
-                </div>
-              ))}
-            </div>
-            {!selectedTable && <p className="mt-2 bg-red-100 text-red-700 p-2 text-xs rounded-md">Please select a table.</p>}
+        <div className="mb-5">
+          <label className="block mb-2 text-sm font-medium text-gray-700">Select Table</label>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {activeTables.map((table) => (
+              <div
+                key={table.tableId}
+                className={`p-4 border rounded-md cursor-pointer transition duration-200 ${selectedTable === table.tableId ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
+                onClick={() => handleTableSelect(table.tableId)}
+              >
+                <h3 className="font-medium">{table.name}</h3>
+                <p className="text-sm">Size: {table.size}</p>
+                <span className="block mt-1 text-gray-500 text-xs italic">
+                  {selectedTable === table.tableId ? "Selected" : "Click to select this table"}
+                </span>
+              </div>
+            ))}
           </div>
+          {!selectedTable && <p className="mt-2 text-red-600 text-xs">Please select a table.</p>}
         </div>
 
         {/* Offer Selection */}
-        <div className="relative mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
-          <label className="sm:basis-40">Active Offers</label>
-          <div className="grow">
-            <div className="grid grid-cols-1 gap-4">
-              {activeOffers.map((offer) => (
-                <div
-                  key={offer._id}
-                  className={`p-4 border rounded-md cursor-pointer transition duration-200 ${selectedOffer === offer._id ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
-                  onClick={() => handleOfferSelect(offer._id)}
-                  onDoubleClick={() => handleOfferSelect(offer._id)}
-                >
-                  <h3 className="font-medium">{offer.name}</h3>
-                  <p className="text-sm">Discount: {offer.discountPercentage}%</p>
-                  <p className="text-xs text-gray-500">
-                    Valid from {new Date(offer.startDate).toLocaleDateString()} to {new Date(offer.endDate).toLocaleDateString()}
-                  </p>
-                  <span className="block mt-1 text-gray-500 text-xs italic">
-                    {selectedOffer === offer._id ? "Selected" : "Click to select this offer"}
-                  </span>
-                </div>
-              ))}
-            </div>
-            {activeOffers.length === 0 && (
-              <p className="mt-2 bg-yellow-100 text-yellow-700 p-2 text-xs rounded-md">
-                No active offers available at this time.
-              </p>
-            )}
+        <div className="mb-5">
+          <label className="block mb-2 text-sm font-medium text-gray-700">Active Offers</label>
+          <div className="grid grid-cols-1 gap-4">
+            {activeOffers.map((offer) => (
+              <div
+                key={offer._id}
+                className={`p-4 border rounded-md cursor-pointer transition duration-200 ${selectedOffer?._id === offer._id ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
+                onClick={() => handleOfferSelect(offer._id)}
+                onDoubleClick={() => handleOfferDoubleClick(offer._id)}
+              >
+                <h3 className="font-medium">{offer.name}</h3>
+                <p className="text-sm">Discount: {offer.discountPercentage}%</p>
+                <p className="text-xs text-gray-500">
+                  Valid from {new Date(offer.startDate).toLocaleDateString()} to {new Date(offer.endDate).toLocaleDateString()}
+                </p>
+                <span className="block mt-1 text-gray-500 text-xs italic">
+                  {selectedOffer?._id === offer._id ? "Selected" : "Click to select this offer"}
+                </span>
+              </div>
+            ))}
           </div>
+          {activeOffers.length === 0 && (
+            <p className="mt-2 text-yellow-700 text-xs">No active offers available at this time.</p>
+          )}
         </div>
 
         {/* Priority Option */}
-        <div className="mb-12 flex items-center gap-5">
+        <div className="mb-8 flex items-center gap-2">
           <input
-            className="h-6 w-6 accent-orange-400 focus:outline-none focus:ring focus:ring-orange-400 focus:ring-offset-2"
+            className="h-5 w-5 accent-orange-400 focus:ring focus:ring-orange-400"
             type="checkbox"
             name="priority"
             id="priority"
             checked={withPriority}
             onChange={(e) => setWithPriority(e.target.checked)}
           />
-          <label htmlFor="priority" className="font-medium">Want to give your order priority?</label>
+          <label htmlFor="priority" className="font-medium text-sm">Want to give your order priority?</label>
         </div>
 
         {/* Hidden Inputs */}
         <input type="hidden" name="cart" value={JSON.stringify(cart)} />
         <input type="hidden" name="selectedTable" value={selectedTable} />
-        <input type="hidden" name="selectedOffer" value={selectedOffer} />
+        <input type="hidden" name="selectedOffer" value={selectedOffer?._id || ''} />
 
         {/* Submit Button */}
         <button
           disabled={isSubmitting || !selectedTable}
-          className="rounded bg-orange-600 px-4 py-2 font-medium text-white disabled:opacity-50 hover:bg-orange-500 transition duration-200"
+          className="w-full rounded-lg bg-orange-600 px-4 py-2 font-medium text-white disabled:opacity-50 hover:bg-orange-500 transition duration-200"
         >
-          {isSubmitting ? "Placing order...." : `Order now from ${formatCurrency(totalPrice)}`}
+          {isSubmitting ? "Placing order..." : `Order now from ${formatCurrency(totalPrice)}`}
         </button>
       </Form>
     </div>

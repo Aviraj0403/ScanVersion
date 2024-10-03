@@ -29,7 +29,7 @@ const iconHover = keyframes`
   100% { transform: scale(1); }
 `;
 
-const Header = () => {
+const Header = ({ setSearchQuery }) => {
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold: 100,
@@ -44,6 +44,10 @@ const Header = () => {
     setCartOpen((prev) => !prev);
   };
 
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
   return (
     <>
       <AppBar
@@ -54,7 +58,7 @@ const Header = () => {
           transition: "background-color 0.3s ease, color 0.3s ease",
           zIndex: 1000,
           animation: trigger ? `${colorChange} 2s infinite` : "none",
-          minHeight: '64px', // Reduce header size
+          minHeight: '64px',
         }}
       >
         <Toolbar
@@ -65,7 +69,7 @@ const Header = () => {
             maxWidth: "1200px",
             width: "100%",
             mx: "auto",
-            padding: isMobile ? '0 10px' : '0', // Adjust padding for mobile
+            padding: isMobile ? '0 10px' : '0',
           }}
         >
           <Link
@@ -93,13 +97,14 @@ const Header = () => {
             <InputBase
               placeholder="Search…"
               startAdornment={<SearchIcon sx={{ color: "gray", mr: 1 }} />}
+              onChange={handleSearchChange}
               sx={{
                 pl: 2,
                 pr: 4,
                 py: 0.5,
                 bgcolor: "grey.100",
                 borderRadius: 50,
-                width: isMobile ? "100%" : "300px", // Full width on mobile
+                width: isMobile ? "100%" : "300px",
                 transition: "all 0.3s ease",
                 "&:hover": { bgcolor: "grey.200", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" },
               }}
