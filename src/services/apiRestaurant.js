@@ -22,14 +22,14 @@ export async function getOrder(id) {
   return data;
 }
 
-export async function createOrder(newOrder) {
-  const { data } = await fetchData(`${API_URL}/order`, {
-    method: "POST",
-    body: JSON.stringify(newOrder),
-    headers: { "Content-Type": "application/json" },
-  });
-  return data;
-}
+// export async function createOrder(newOrder) {
+//   const { data } = await fetchData(`${API_URL}/order`, {
+//     method: "POST",
+//     body: JSON.stringify(newOrder),
+//     headers: { "Content-Type": "application/json" },
+//   });
+//   return data;
+// }
 
 export async function updateOrder(id, updateObj) {
   await fetchData(`${API_URL}/order/${id}`, {

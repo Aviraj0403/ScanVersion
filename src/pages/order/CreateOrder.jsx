@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
+import { Form } from "react-router-dom";
 import EmptyCart from "../cart/EmptyCart";
-import { createOrder, fetchActiveDiningTables, fetchActiveOffer } from "../../services/apiRestaurant";
-import store from "../../store";
+import { fetchActiveDiningTables, fetchActiveOffer } from "../../services/apiRestaurant";
 import { clearCart, getTotalCartPrice } from "../cart/cartSlice";
 import { formatCurrency } from "../../utils/helpers";
+import { useNavigate } from "react-router-dom";
+
+const API_URL = "http://localhost:4000/api/orders/create"; // Updated to point to the order endpoint
+const restaurantId = "66f2f1c8f2696a3714a2d1ad"; // Hardcoded restaurant ID
 
 const isValidPhone = (str) =>
   /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/.test(str);
@@ -16,16 +19,17 @@ const CreateOrder = () => {
   const [activeOffers, setActiveOffers] = useState([]);
   const [selectedTable, setSelectedTable] = useState(null);
   const [selectedOffer, setSelectedOffer] = useState(null);
-  const { username } = useSelector((state) => state.user);
-  const navigation = useNavigation();
-  const isSubmitting = navigation.state === "submitting";
-  const formErrors = useActionData();
+  const [submissionStatus, setSubmissionStatus] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const cart = useSelector((state) => state.cart.cart);
   const totalCartPrice = useSelector(getTotalCartPrice);
+
+  // Calculate prices
   const priorityPrice = withPriority ? totalCartPrice * 0.2 : 0;
-  const offerDiscount = selectedOffer ? (Number(selectedOffer.discountPercentage) || 0) : 0;
-  const totalPrice = totalCartPrice + priorityPrice - (totalCartPrice * offerDiscount / 100);
+  const offerDiscount = selectedOffer ? (totalCartPrice * (Number(selectedOffer.discountPercentage) || 0) / 100) : 0;
+  const totalPrice = (totalCartPrice + priorityPrice - offerDiscount).toFixed(2); // Ensure this is a string
 
   useEffect(() => {
     const fetchTables = async () => {
@@ -65,17 +69,75 @@ const CreateOrder = () => {
     }
   };
 
-  const handleOfferDoubleClick = (offerId) => {
-    if (selectedOffer && selectedOffer._id === offerId) {
-      setSelectedOffer(null);
+  const createOrder = async (order) => {
+    try {
+      const response = await fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify(order),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to create order');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Order creation failed:', error);
+      throw error;
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    console.log("Current cart items:", cart);
+    
+    const order = {
+      customer: e.target.customer.value,
+      phone: e.target.phone.value,
+      restaurantId,
+      selectedTable: selectedTable,
+      selectedOffer: selectedOffer?._id || null,  // Ensure the name matches
+      cart: cart.map(item => ({
+        fooditemId: item.fooditemId, // Ensure this matches 'fooditemId'
+        quantity: item.quantity,
+        // price: Number(item.price) || 0,
+        // totalPrice: (Number(item.price) || 0) * (item.quantity || 1) 
+      })),
+      priority: withPriority,
+    };
+    console.log("Order to be submitted:", JSON.stringify(order, null, 2));
+  
+   
+  const errors = {};
+  if (!isValidPhone(order.phone)) errors.phone = "Please provide a valid phone number.";
+  if (!order.selectedTable) errors.selectedTable = "Please select a table.";
+  if (!order.cart || order.cart.length === 0) errors.cart = "Cart must be a non-empty array.";
+
+  if (Object.keys(errors).length > 0) {
+    setErrorMessage(errors.phone || errors.selectedTable || errors.cart);
+    return;
+  }
+
+  try {
+    const result = await createOrder(order);
+    dispatch(clearCart());
+    navigate(`/order/${result.orderId}`);
+    // setSubmissionStatus(`Order placed successfully! Order ID: ${result.orderId}`);
+    setErrorMessage(null);
+  } catch (error) {
+    setErrorMessage(error.message || "Failed to place order. Please try again.");
+  }
+};
+  
   return (
     <div className="px-4 py-6 bg-white rounded shadow-md max-w-md mx-auto">
       <h2 className="mb-8 text-2xl font-semibold text-center">Ready to order? Let&apos;s go!</h2>
 
-      <Form method="POST">
+      <Form onSubmit={handleSubmit}>
+        {/* Form fields */}
         <div className="mb-5">
           <label className="block mb-2 text-sm font-medium text-gray-700">First Name</label>
           <input
@@ -84,7 +146,6 @@ const CreateOrder = () => {
             name="customer"
             required
             placeholder="e.g. BrTech"
-            defaultValue={username || ''}
           />
         </div>
 
@@ -96,11 +157,8 @@ const CreateOrder = () => {
             name="phone"
             required
             placeholder="912 000 0000"
-            defaultValue=""
           />
-          {formErrors?.phone && (
-            <p className="mt-2 text-red-600 text-xs">{formErrors.phone}</p>
-          )}
+          {errorMessage && <p className="mt-2 text-red-600 text-xs">{errorMessage}</p>}
         </div>
 
         {/* Table Selection */}
@@ -109,14 +167,14 @@ const CreateOrder = () => {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {activeTables.map((table) => (
               <div
-                key={table.tableId}
-                className={`p-4 border rounded-md cursor-pointer transition duration-200 ${selectedTable === table.tableId ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
-                onClick={() => handleTableSelect(table.tableId)}
+                key={table._id}
+                className={`p-4 border rounded-md cursor-pointer transition duration-200 ${selectedTable === table._id ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
+                onClick={() => handleTableSelect(table._id)}
               >
                 <h3 className="font-medium">{table.name}</h3>
                 <p className="text-sm">Size: {table.size}</p>
                 <span className="block mt-1 text-gray-500 text-xs italic">
-                  {selectedTable === table.tableId ? "Selected" : "Click to select this table"}
+                  {selectedTable === table._id ? "Selected" : "Click to select this table"}
                 </span>
               </div>
             ))}
@@ -133,7 +191,6 @@ const CreateOrder = () => {
                 key={offer._id}
                 className={`p-4 border rounded-md cursor-pointer transition duration-200 ${selectedOffer?._id === offer._id ? 'bg-orange-200' : 'hover:bg-orange-100'}`}
                 onClick={() => handleOfferSelect(offer._id)}
-                onDoubleClick={() => handleOfferDoubleClick(offer._id)}
               >
                 <h3 className="font-medium">{offer.name}</h3>
                 <p className="text-sm">Discount: {offer.discountPercentage}%</p>
@@ -164,48 +221,18 @@ const CreateOrder = () => {
           <label htmlFor="priority" className="font-medium text-sm">Want to give your order priority?</label>
         </div>
 
-        {/* Hidden Inputs */}
-        <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-        <input type="hidden" name="selectedTable" value={selectedTable} />
-        <input type="hidden" name="selectedOffer" value={selectedOffer?._id || ''} />
-
         {/* Submit Button */}
         <button
-          disabled={isSubmitting || !selectedTable}
-          className="w-full rounded-lg bg-orange-600 px-4 py-2 font-medium text-white disabled:opacity-50 hover:bg-orange-500 transition duration-200"
+          className="w-full rounded-lg bg-orange-600 px-4 py-2 font-medium text-white hover:bg-orange-500 transition duration-200"
+          type="submit"
         >
-          {isSubmitting ? "Placing order..." : `Order now from ${formatCurrency(totalPrice)}`}
+          Order now from {formatCurrency(totalPrice)}
         </button>
       </Form>
+
+      {submissionStatus && <p className="mt-4 text-green-600">{submissionStatus}</p>}
     </div>
   );
 };
-
-export async function action({ request }) {
-  const formData = await request.formData();
-  const data = Object.fromEntries(formData);
-
-  const order = {
-    ...data,
-    cart: JSON.parse(data.cart),
-    priority: data.priority === "true",
-    selectedTable: data.selectedTable,
-    selectedOffer: data.selectedOffer,
-  };
-
-  const errors = {};
-  if (!isValidPhone(order.phone))
-    errors.phone = "Please provide a valid phone number.";
-
-  if (!order.selectedTable)
-    errors.selectedTable = "Please select a table.";
-
-  if (Object.keys(errors).length > 0) return errors;
-
-  const newOrder = await createOrder(order);
-  store.dispatch(clearCart());
-
-  return redirect(`/order/${newOrder.id}`);
-}
 
 export default CreateOrder;
