@@ -124,8 +124,8 @@ const CreateOrder = () => {
   try {
     const result = await createOrder(order);
     dispatch(clearCart());
-    navigate(`/order/${result.orderId}`);
-    // setSubmissionStatus(`Order placed successfully! Order ID: ${result.orderId}`);
+    // navigate(`/order/${result.orderId}`);
+    setSubmissionStatus(`Order placed successfully! Order ID: ${result.orderId}`);
     setErrorMessage(null);
   } catch (error) {
     setErrorMessage(error.message || "Failed to place order. Please try again.");
