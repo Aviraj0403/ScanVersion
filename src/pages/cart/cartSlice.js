@@ -14,13 +14,14 @@ const cartSlice = createSlice({
   reducers: {
     addItem: (state, action) => {
       const existingItem = state.cart.find(item => item.fooditemId === action.payload.fooditemId);
-      
+
       if (existingItem) {
         existingItem.quantity += action.payload.quantity;
         existingItem.totalPrice = existingItem.quantity * existingItem.price;
       } else {
-        state.cart.push(action.payload);
+        state.cart.push({ ...action.payload, totalPrice: action.payload.price * action.payload.quantity });
       }
+
       // Update localStorage
       localStorage.setItem('cart', JSON.stringify(state.cart));
     },
@@ -43,6 +44,7 @@ const cartSlice = createSlice({
       if (item) {
         item.quantity--;
         item.totalPrice = item.quantity * item.price;
+
         if (item.quantity === 0) {
           cartSlice.caseReducers.removeItem(state, action);
         }
@@ -62,7 +64,6 @@ export const { addItem, removeItem, increaseItem, decreaseItem, clearCart } = ca
 
 export default cartSlice.reducer;
 
-
 // Selectors
 export const getCart = (state) => state.cart.cart;
 
@@ -72,5 +73,5 @@ export const getTotalCartQuantity = (state) =>
 export const getTotalCartPrice = (state) =>
   state.cart.cart.reduce((sum, item) => sum + item.totalPrice, 0);
 
-export const getCurrentQuantityById = (id) => (state) =>
+export const getCurrentQuantityById = (id) => (state) =>  
   state.cart.cart.find((item) => item.fooditemId === id)?.quantity ?? 0;

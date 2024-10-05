@@ -3,7 +3,7 @@ import { useLoaderData } from 'react-router-dom';
 import MenuItem from './MenuItem.jsx';
 import FoodCategoryFilter from './FilterFood.jsx';
 import { getMenu } from '../../services/apiRestaurant.js';
-import Header from '../../components/Header/Header.jsx'; // Adjust the import based on your structure
+import Header from '../../components/Header/Header.jsx';
 
 const Menu = () => {
   const initialMenuData = useLoaderData();
@@ -11,18 +11,19 @@ const Menu = () => {
   const [filteredMenu, setFilteredMenu] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [foodType, setFoodType] = useState('All');
-  const [searchQuery, setSearchQuery] = useState(''); // New state for search query
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (Array.isArray(initialMenuData) && initialMenuData.length > 0) {
+    if (Array.isArray(initialMenuData)) {
       setMenu(initialMenuData);
       setFilteredMenu(initialMenuData);
-      setLoading(false);
     } else {
       console.error('Invalid menu data:', initialMenuData);
-      setLoading(false);
+      setMenu([]); // Set to empty array if data is invalid
+      setFilteredMenu([]);
     }
+    setLoading(false);
   }, [initialMenuData]);
 
   useEffect(() => {
@@ -50,16 +51,16 @@ const Menu = () => {
 
   const handleCategoryChange = (category, type) => {
     setSelectedCategory(category);
-    setFoodType(type); // Update food type when category changes
+    setFoodType(type);
   };
 
   if (loading) {
-    return <p>Loading menu...</p>; // Loading state
+    return <p>Loading menu...</p>;
   }
 
   return (
     <div className='menu-page'>
-      <Header setSearchQuery={setSearchQuery} /> {/* Pass the setSearchQuery to Header */}
+      <Header setSearchQuery={setSearchQuery} />
       <FoodCategoryFilter onCategoryChange={handleCategoryChange} />
       <div className="card-div mt-2 mb-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 border-t border-gray-300 pt-2 pb-4">
         {filteredMenu.length > 0 ? (
@@ -77,10 +78,11 @@ const Menu = () => {
 export async function loader() {
   try {
     const menu = await getMenu();
+    console.log('Fetched menu data:', menu); // Log the fetched menu data
     return menu;
   } catch (error) {
     console.error('Error loading menu:', error);
-    return [];
+    return []; // Return an empty array in case of error
   }
 }
 
