@@ -1,59 +1,29 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getAddress } from "../../services/apiGeocoding";
-
-function getPosition() {
-  return new Promise(function (resolve, reject) {
-    navigator.geolocation.getCurrentPosition(resolve, reject);
-  });
-}
-
-export const fetchAddress = createAsyncThunk(
-  "user/fetchAddress",
-  async function () {
-    const positionObj = await getPosition();
-    const position = {
-      latitude: positionObj.coords.latitude,
-      longitude: positionObj.coords.longitude,
-    };
-
-    const addressObj = await getAddress(position);
-    const address = `${addressObj?.locality}, ${addressObj?.city} ${addressObj?.postcode}, ${addressObj?.countryName}`;
-
-    return { position, address };
-  },
-);
+import { createSlice } from "@reduxjs/toolkit";
 
 const userSlice = createSlice({
-  name: "user",
-  initialState: {
-    name: "",
-    status: "idle",
-    position: {},
-    address: "",
-    error: "",
-  },
-  reducers: {
-    updateName(state, action) {
-      state.name = action.payload;
+    name: "user",
+    initialState: {
+        username: "",
+        orderHistory: [], // Ensure this is initialized as an empty array
+        error: null,
     },
-  },
-  extraReducers: (builder) =>
-    builder
-      .addCase(fetchAddress.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(fetchAddress.fulfilled, (state, action) => {
-        state.position = action.payload.position;
-        state.address = action.payload.address;
-        state.status = "idle";
-      })
-      .addCase(fetchAddress.rejected, (state) => {
-        state.status = "error";
-        state.error =
-          "There was a problem getting your address. Make sure to fill this field!";
-      }),
+    reducers: {
+        updateName(state, action) {
+            state.username = action.payload; // Update the username
+        },
+        addOrderToHistory(state, action) {
+            if (!state.orderHistory) {
+                state.orderHistory = []; // Safeguard against undefined
+            }
+            state.orderHistory.push(action.payload); // Add an order to the history
+        },
+        setUserError(state, action) {
+            state.error = action.payload; // Capture errors related to user actions
+        },
+    },
 });
 
-export const { updateName } = userSlice.actions;
+// Export actions and reducer
+export const { updateName, addOrderToHistory, setUserError } = userSlice.actions;
 
 export default userSlice.reducer;

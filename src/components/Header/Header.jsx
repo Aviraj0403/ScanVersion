@@ -29,7 +29,7 @@ const iconHover = keyframes`
   100% { transform: scale(1); }
 `;
 
-const Header = () => {
+const Header = ({ setSearchQuery }) => {
   const trigger = useScrollTrigger({ disableHysteresis: true, threshold: 100 });
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -38,6 +38,10 @@ const Header = () => {
   const handleCartToggle = useCallback(() => {
     setCartOpen((prev) => !prev);
   }, []);
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
 
   const appBarStyles = {
     backgroundColor: trigger ? "#004353" : "#fff",
@@ -90,6 +94,7 @@ const Header = () => {
             <InputBase
               placeholder="Search…"
               startAdornment={<SearchIcon sx={{ color: "gray", mr: 1 }} />}
+              onChange={handleSearchChange}
               sx={inputStyles}
             />
           </Box>

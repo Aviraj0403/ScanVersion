@@ -1,32 +1,40 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
+export const fetchFoods = createAsyncThunk('food/fetchFoods', async () => {
+  const response = await fetch('/api/foods'); // Update with your actual endpoint
+  if (!response.ok) throw new Error('Failed to fetch foods');
+  return response.json();
+});
 
 const foodSlice = createSlice({
   name: "food",
   initialState: {
-    foods: [], // Array to store food items
-    loading: false, // To track loading state
-    error: null, // To capture any errors
+    foods: [],
+    loading: false,
+    error: null,
   },
   reducers: {
-    startLoading(state) {
-      state.loading = true; // Set loading state
-      state.error = null; // Clear any previous errors
-    },
-    setFoods(state, action) {
-      state.foods = action.payload; // Set food items
-      state.loading = false; // Reset loading state
-    },
-    setFoodError(state, action) {
-      state.error = action.payload; // Capture errors related to foods
-      state.loading = false; // Reset loading state
-    },
     clearFoods(state) {
-      state.foods = []; // Clear food items
+      state.foods = [];
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchFoods.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchFoods.fulfilled, (state, action) => {
+        state.foods = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchFoods.rejected, (state, action) => {
+        state.error = action.error.message;
+        state.loading = false;
+      });
   },
 });
 
 // Export actions and reducer
-export const { setFoods, setFoodError, startLoading, clearFoods } = foodSlice.actions;
-
+export const { clearFoods } = foodSlice.actions;
 export default foodSlice.reducer;

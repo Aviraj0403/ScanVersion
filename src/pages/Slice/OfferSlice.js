@@ -1,23 +1,28 @@
-// offerSlice.js
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
+export const fetchOffers = createAsyncThunk('offer/fetchOffers', async () => {
+  const response = await fetch('/api/offers'); // Update with your actual endpoint
+  if (!response.ok) throw new Error('Failed to fetch offers');
+  return response.json();
+});
 
 const offerSlice = createSlice({
   name: "offer",
   initialState: {
-    offers: [], // Initial state for offers
-    error: null, // To capture any errors
+    offers: [],
+    error: null,
   },
-  reducers: {
-    setOffers(state, action) {
-      state.offers = action.payload; // Set offers
-    },
-    setOfferError(state, action) {
-      state.error = action.payload; // Capture errors related to offers
-    },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchOffers.fulfilled, (state, action) => {
+        state.offers = action.payload;
+      })
+      .addCase(fetchOffers.rejected, (state, action) => {
+        state.error = action.error.message;
+      });
   },
 });
 
 // Export actions and reducer
-export const { setOffers, setOfferError } = offerSlice.actions;
-
 export default offerSlice.reducer;

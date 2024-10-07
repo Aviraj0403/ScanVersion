@@ -78,11 +78,11 @@ const Menu = () => {
 export async function loader() {
   try {
     const menu = await getMenu();
-    console.log('Fetched menu data:', menu); // Log the fetched menu data
+    console.log('Fetched menu data:', menu);
     return menu;
   } catch (error) {
     console.error('Error loading menu:', error);
-    return []; // Return an empty array in case of error
+    return [];
   }
 }
 
