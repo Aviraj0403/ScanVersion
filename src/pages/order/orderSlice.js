@@ -3,61 +3,72 @@ import { createSlice } from "@reduxjs/toolkit";
 const orderSlice = createSlice({
   name: "order",
   initialState: {
-    tempOrders: [], // Array to store temporary orders
+    tempOrders: [],
     submissionStatus: null,
     error: null,
-    activeTables: [], // Initialize activeTables as an empty array
-    activeOffers: [], // Initialize activeOffers as an empty array
-    orderDetails: {}, // Object to store complete order details
+    activeTables: [],
+    activeOffers: [],
+    orderDetails: {},
+    ordersHistory: [],
   },
   reducers: {
     storeOrderTemporarily: (state, action) => {
-      console.log("Received action payload:", action.payload); // Debugging
+      console.log("Received action payload:", action.payload);
       if (action.payload) {
-        state.tempOrders.push(action.payload);
-        console.log("Updated tempOrders:", state.tempOrders); // Debugging
-        state.error = null; // Clear any previous errors
+        // Check for duplicate orders
+        const existingOrderIndex = state.tempOrders.findIndex(order => order.id === action.payload.id);
+        if (existingOrderIndex >= 0) {
+          state.tempOrders[existingOrderIndex] = action.payload; // Update existing order
+        } else {
+          state.tempOrders.push(action.payload); // Add new order
+        }
+        console.log("Updated tempOrders:", state.tempOrders);
+        state.error = null;
       } else {
         console.error("Attempted to store an undefined order.");
       }
     },
     clearTempOrders: (state) => {
-      state.tempOrders = []; // Clear the array of orders
-      console.log("Temporary orders cleared."); // Debugging
+      state.tempOrders = [];
+      console.log("Temporary orders cleared.");
     },
     setActiveTables: (state, action) => {
       if (Array.isArray(action.payload)) {
-        state.activeTables = action.payload; // Set active tables
+        state.activeTables = action.payload;
       } else {
         console.error("setActiveTables expected an array, but received:", action.payload);
       }
     },
     setActiveOffers: (state, action) => {
       if (Array.isArray(action.payload)) {
-        state.activeOffers = action.payload; // Set active offers
+        state.activeOffers = action.payload;
       } else {
         console.error("setActiveOffers expected an array, but received:", action.payload);
       }
     },
     setSubmissionStatus: (state, action) => {
-      state.submissionStatus = action.payload; // Set submission status
+      state.submissionStatus = action.payload;
     },
     setOrderError: (state, action) => {
-      state.error = action.payload; // Set error state
+      state.error = action.payload;
     },
     restoreOrders: (state, action) => {
       if (Array.isArray(action.payload)) {
-        state.tempOrders = action.payload; // Restore orders from persisted state
+        state.tempOrders = action.payload;
       } else {
         console.error("restoreOrders expected an array, but received:", action.payload);
       }
     },
     setOrderDetails: (state, action) => {
       if (action.payload) {
-        state.orderDetails = action.payload; // Set complete order details
+        state.orderDetails = action.payload;
       } else {
         console.error("Attempted to set undefined order details.");
       }
+    },
+    addOrderToHistory: (state, action) => {
+      // Save the order to history
+      state.ordersHistory.push(action.payload);
     },
   },
 });
@@ -71,7 +82,8 @@ export const {
   setSubmissionStatus, 
   setOrderError, 
   restoreOrders,
-  setOrderDetails 
+  setOrderDetails ,
+  addOrderToHistory 
 } = orderSlice.actions;
 
 export default orderSlice.reducer;

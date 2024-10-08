@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useOrderContext } from '../../contexts/OrderContext';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -7,39 +7,39 @@ import { formatCurrency } from '../../utils/helpers';
 import io from 'socket.io-client';
 import { addOrderToHistory } from '../user/userSlice';
 
-const socket = io('http://localhost:4000'); // Connect to your WebSocket server
+// Set up the socket connection
+const socket = io('http://localhost:4000');
 
 const Payment = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const tempOrders = useSelector((state) => {
-        console.log("Current Redux state:", state); // Debugging
-        return state.order.tempOrders;
-    });
-    console.log("Current tempOrders in Payment component:", tempOrders); // Debugging
-
-    const order = tempOrders[tempOrders.length - 1]; // Get the latest order
-    console.log("Current order before payment:", order); // Debugging
-
+    const tempOrders = useSelector(state => state.order.tempOrders);
+    const order = tempOrders[tempOrders.length - 1];
     const { activeTables, activeOffers } = useOrderContext();
+    const [loading, setLoading] = useState(false); // Loading state
 
     useEffect(() => {
         if (!order) {
-            console.log("No order found, redirecting..."); // Debugging
-            navigate('/order/create'); // Redirect if no order found
+            console.log("No order found, redirecting...");
+            navigate('/order/create');
+            return; // Ensure early return if there's no order
         }
 
-        // Socket listener for payment confirmation
-        socket.on('paymentConfirmed', (transactionId) => {
+        // Listener for payment confirmation
+        const paymentConfirmedListener = (transactionId) => {
             console.log('Payment confirmed:', transactionId);
             navigate('/order/confirmation', { state: { transactionId } });
-        });
+        };
 
+        socket.on('paymentConfirmed', paymentConfirmedListener);
+
+        // Cleanup listener on component unmount
         return () => {
-            socket.off('paymentConfirmed'); // Clean up the listener on unmount
+            socket.off('paymentConfirmed', paymentConfirmedListener);
         };
     }, [order, navigate]);
 
+    // Helper functions
     const getTableName = (tableId) => {
         const table = activeTables.find(t => t._id === tableId);
         return table ? table.name : "Unknown Table";
@@ -49,15 +49,15 @@ const Payment = () => {
         const offer = activeOffers.find(o => o._id === offerId);
         return offer ? offer.name : "No Offer";
     };
-    const handlePayment = async (paymentMethod) => {
-        console.log("Handling payment for method:", paymentMethod);
-        if (!order) return; // Prevent proceeding if order is not available
 
-        const transactionId = Math.random().toString(36).substring(2, 15); // Simulated transaction ID
-        console.log("Transaction ID:", transactionId); // Debugging
+    const handlePayment = async (paymentMethod) => {
+        if (!order) return;
+
+        const transactionId = Math.random().toString(36).substring(2, 15);
+        console.log("Transaction ID:", transactionId);
+        setLoading(true); // Start loading
 
         try {
-            console.log("Sending payment request...");
             const response = await fetch('http://localhost:4000/api/orders/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -73,24 +73,24 @@ const Payment = () => {
             }
 
             const result = await response.json();
-            console.log("Payment response:", result); // Debugging
             dispatch(clearCart());
 
             const tableName = getTableName(order.selectedTable);
+            const restaurantId = order.restaurantId; // Ensure restaurantId is present
 
-            // Emit the newOrder event for notification
             socket.emit('newOrder', {
-                orderId: result.orderId, // Order ID returned from the server
+                orderId: result.orderId,
                 transactionId,
                 tableId: order.selectedTable,
+                restaurantId, // Include restaurantId
                 tableName,
                 orderDetails: order,
             });
 
-            // Emit payment confirmation for notifications
             socket.emit('paymentConfirmed', {
                 transactionId,
                 tableId: order.selectedTable,
+                restaurantId, // Include restaurantId
                 customer: order.customer,
                 totalPrice: order.totalPrice,
             });
@@ -98,25 +98,19 @@ const Payment = () => {
             socket.emit('paymentProcessed', {
                 orderId: result.orderId,
                 transactionId,
+                paymentStatus: 'Paid',
                 tableId: order.selectedTable,
+                restaurantId, // Include restaurantId
                 tableName,
             });
 
-            console.log("Emitted newOrder and paymentConfirmed:", {
-                orderId: result.orderId,
-                transactionId,
-                tableId: order.selectedTable,
-                tableName,
-                orderDetails: order,
-            }); // Debugging
-
-            dispatch(addOrderToHistory({ ...order, transactionId })); // Add order to history
-            console.log("Order added to history:", { ...order, transactionId }); // Debugging
+            dispatch(addOrderToHistory({ ...order, transactionId }));
             navigate('/order/confirmation', { state: { transactionId } });
-
         } catch (error) {
             console.error('Payment error:', error);
             alert('Payment processing failed. Please try again.');
+        } finally {
+            setLoading(false); // End loading
         }
     };
 
@@ -149,18 +143,24 @@ const Payment = () => {
 
             <h3 className="text-xl font-medium mb-2">Select Payment Method</h3>
             <div className="flex flex-col gap-2">
-                <button
-                    onClick={() => handlePayment('Cash')}
-                    className="w-full bg-green-600 text-white font-semibold py-2 rounded hover:bg-green-500 transition duration-200"
-                >
-                    Pay with Cash
-                </button>
-                <button
-                    onClick={() => handlePayment('PayPal')}
-                    className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-500 transition duration-200"
-                >
-                    Pay with PayPal
-                </button>
+                {loading ? (
+                    <div className="text-center">Processing payment...</div>
+                ) : (
+                    <>
+                        <button
+                            onClick={() => handlePayment('Cash')}
+                            className="w-full bg-green-600 text-white font-semibold py-2 rounded hover:bg-green-500 transition duration-200"
+                        >
+                            Pay with Cash
+                        </button>
+                        <button
+                            onClick={() => handlePayment('PayPal')}
+                            className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-500 transition duration-200"
+                        >
+                            Pay with PayPal
+                        </button>
+                    </>
+                )}
             </div>
         </div>
     );
