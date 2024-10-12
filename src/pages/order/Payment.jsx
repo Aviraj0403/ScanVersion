@@ -76,6 +76,7 @@ const Payment = () => {
             dispatch(clearCart());
 
             const tableName = getTableName(order.selectedTable);
+            console.log("T",tableName)
             const restaurantId = order.restaurantId; // Ensure restaurantId is present
 
             socket.emit('newOrder', {
