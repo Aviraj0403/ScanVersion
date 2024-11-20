@@ -33,7 +33,11 @@ const CreateOrder = () => {
         dispatch(fetchOffers());
         dispatch(fetchTables());
     }, [dispatch]);
-
+    
+    useEffect(() => {
+        console.log('Active Offers from Redux:', activeOffers);
+        console.log('Active Tables from Redux:', activeTables); // Debugging the active offers
+    }, [activeOffers]);
     const totalPrice = useMemo(() => {
         const priorityPrice = withPriority ? totalCartPrice * 0.2 : 0;
         const offerDiscount = selectedOffer ? (totalCartPrice * (Number(selectedOffer.discountPercentage) || 0) / 100) : 0;

@@ -17,8 +17,16 @@ export const OrderProvider = ({ children }) => {
             try {
                 const tables = await fetchActiveDiningTables();
                 const offers = await fetchActiveOffer();
+                
+                // Logging fetched data for debugging
+                console.log("Fetched Active Tables:", tables);
+                console.log("Fetched Active Offers:", offers);
+
+                // Set state only if valid data is fetched
                 setActiveTablesState(tables || []);
                 setActiveOffersState(offers || []);
+                
+                // Dispatch actions to update Redux store
                 dispatch(setActiveTables(tables || []));
                 dispatch(setActiveOffers(offers || []));
             } catch (error) {
@@ -29,6 +37,7 @@ export const OrderProvider = ({ children }) => {
         fetchData();
     }, [dispatch]);
 
+    // Use socket connection to handle real-time updates
     useSocket((data) => {
         if (data.type === 'tablesUpdated') {
             setActiveTablesState(data.tables);
