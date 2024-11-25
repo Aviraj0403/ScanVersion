@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import './starRating.css';
+import './StarRating.css';
 
 const StarRating = ({ rating, onRatingChange }) => {
   const [hover, setHover] = useState(null);

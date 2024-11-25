@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:4000/api/food/66f2f1c8f2696a3714a2d1ad"; // Hardcoded food API URL
+// const API_URL = "http://localhost:4000/api/food/66f2f1c8f2696a3714a2d1ad"; // Hardcoded food API URL
+const API_URL ="https://backend-obet.onrender.com/api/food/66f2f1c8f2696a3714a2d1ad"
 const TABLE_API_URL = "http://localhost:4000/api/table/66f2f1c8f2696a3714a2d1ad/get-active"; // Hardcoded restaurant ID for table API
 const OFFER_API_URL = "http://localhost:4000/api/offer/66f2f1c8f2696a3714a2d1ad/get-active"; // Corrected URL
 

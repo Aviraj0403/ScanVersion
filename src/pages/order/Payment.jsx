@@ -50,6 +50,7 @@ const Payment = () => {
         return offer ? offer.name : "No Offer";
     };
 
+    // Handle Razorpay payment
     const handlePayment = async (paymentMethod) => {
         if (!order) return;
 
@@ -58,55 +59,116 @@ const Payment = () => {
         setLoading(true); // Start loading
 
         try {
-            const response = await fetch('http://localhost:4000/api/orders/create', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ...order,
-                    paymentMethod,
+            if (paymentMethod === 'Razorpay') {
+                // Step 1: Create order on your backend
+                const response = await fetch('http://localhost:4000/api/orders/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ...order,
+                        paymentMethod,
+                        transactionId,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create Razorpay order');
+                }
+
+                const result = await response.json();
+
+                // Step 2: Use Razorpay SDK to open payment window
+                const options = {
+                    key: 'rzp_test_oSItdzvqy6kWyb', // Your Razorpay API Key
+                    amount: result.amount, // Amount in smallest currency unit (e.g., paise for INR)
+                    currency: result.currency,
+                    name: "BrTech",
+                    description: 'Payment for Order #' + result.orderId,
+                    order_id: result.razorpayOrderId, // Razorpay orderId from backend
+                    handler: function (response) {
+                        console.log('Payment successful:', response);
+
+                        // Emit payment confirmation to the socket server
+                        socket.emit('paymentConfirmed', {
+                            transactionId,
+                            tableId: order.selectedTable,
+                            restaurantId: order.restaurantId,
+                            customer: order.customer,
+                            totalPrice: order.totalPrice,
+                        });
+
+                        // Clear the cart after successful payment
+                        dispatch(clearCart());
+
+                        // Add the order to the history in Redux
+                        dispatch(addOrderToHistory({ ...order, transactionId }));
+
+                        // Navigate to order confirmation page
+                        navigate('/order/confirmation', { state: { transactionId } });
+                    },
+                    prefill: {
+                        name: order.customer,
+                        email: order.email || '', // Optional, add email from order if available
+                        contact: order.phone,
+                    },
+                    theme: {
+                        color: '#F37254',
+                    },
+                };
+
+                const razorpay = new window.Razorpay(options);
+                razorpay.open();
+            } else {
+                // Handle other payment methods like PayPal or Cash
+                const response = await fetch('http://localhost:4000/api/orders/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ...order,
+                        paymentMethod,
+                        transactionId,
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Payment processing failed');
+                }
+
+                const result = await response.json();
+                dispatch(clearCart());
+
+                const tableName = getTableName(order.selectedTable);
+                const restaurantId = order.restaurantId;
+
+                socket.emit('newOrder', {
+                    orderId: result.orderId,
                     transactionId,
-                }),
-            });
+                    tableId: order.selectedTable,
+                    restaurantId,
+                    tableName,
+                    orderDetails: order,
+                });
 
-            if (!response.ok) {
-                throw new Error('Payment processing failed');
+                socket.emit('paymentConfirmed', {
+                    transactionId,
+                    tableId: order.selectedTable,
+                    restaurantId,
+                    customer: order.customer,
+                    totalPrice: order.totalPrice,
+                });
+
+                socket.emit('paymentProcessed', {
+                    orderId: result.orderId,
+                    transactionId,
+                    paymentStatus: 'Paid',
+                    tableId: order.selectedTable,
+                    restaurantId,
+                    tableName,
+                });
+
+                dispatch(addOrderToHistory({ ...order, transactionId }));
+                navigate('/order/confirmation', { state: { transactionId } });
             }
-
-            const result = await response.json();
-            dispatch(clearCart());
-
-            const tableName = getTableName(order.selectedTable);
-            console.log("T",tableName)
-            const restaurantId = order.restaurantId; // Ensure restaurantId is present
-
-            socket.emit('newOrder', {
-                orderId: result.orderId,
-                transactionId,
-                tableId: order.selectedTable,
-                restaurantId, // Include restaurantId
-                tableName,
-                orderDetails: order,
-            });
-
-            socket.emit('paymentConfirmed', {
-                transactionId,
-                tableId: order.selectedTable,
-                restaurantId, // Include restaurantId
-                customer: order.customer,
-                totalPrice: order.totalPrice,
-            });
-
-            socket.emit('paymentProcessed', {
-                orderId: result.orderId,
-                transactionId,
-                paymentStatus: 'Paid',
-                tableId: order.selectedTable,
-                restaurantId, // Include restaurantId
-                tableName,
-            });
-
-            dispatch(addOrderToHistory({ ...order, transactionId }));
-            navigate('/order/confirmation', { state: { transactionId } });
         } catch (error) {
             console.error('Payment error:', error);
             alert('Payment processing failed. Please try again.');
@@ -154,11 +216,17 @@ const Payment = () => {
                         >
                             Pay with Cash
                         </button>
-                        <button
+                        {/* <button
                             onClick={() => handlePayment('PayPal')}
                             className="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-500 transition duration-200"
                         >
                             Pay with PayPal
+                        </button> */}
+                        <button
+                            onClick={() => handlePayment('Razorpay')}
+                            className="w-full bg-yellow-600 text-white font-semibold py-2 rounded hover:bg-yellow-500 transition duration-200"
+                        >
+                            Pay with Online
                         </button>
                     </>
                 )}
