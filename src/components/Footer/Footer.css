@@ -9,7 +9,7 @@
 .footer-top {
   position: relative;
   padding: 2rem; /* Adjust padding for better responsiveness */
-  background-image: url('/src/assets/images/footer/footer-illustration.png');
+  background-image: url('/assets/images/footer/footer-illustration.png');
   background-repeat: no-repeat;
   background-size: contain; /* Ensure the background image fits well */
   background-position: bottom;
@@ -19,7 +19,7 @@
 
 /* Delivery boy animation */
 .footer-top::after {
-  content: url('/src/assets/images/delivery-boy.svg');
+  content: url('/assets/images/delivery-boy.svg');
   position: absolute;
   bottom: -11px; /* Adjusted for better positioning */
   left: -160px;

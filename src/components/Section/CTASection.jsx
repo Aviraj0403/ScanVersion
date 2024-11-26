@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const CTASection = () => (
   <section
     className="relative bg-cover bg-center text-center py-16 px-4 md:py-24 md:px-8"
-    style={{ backgroundImage: "url('/src/assets/images/hero-bg.jpg')" }}
+    style={{ backgroundImage: "url('/assets/images/hero-bg.jpg')" }}
   >
     <div className="container mx-auto flex flex-col items-center">
       <div className="relative z-10 max-w-3xl">
@@ -21,9 +21,9 @@ const CTASection = () => (
       </Link>
       </div>
       <figure className="relative mt-6 md:mt-8 max-w-4xl">
-        <img src="src\assets\images\cta-banner.png" alt="Burger" className="w-full h-auto object-cover mx-auto" />
+        <img src="\assets\images\cta-banner.png" alt="Burger" className="w-full h-auto object-cover mx-auto" />
         <img
-          src="src\assets\images\sale-shape.png"
+          src="\assets\images\sale-shape.png"
           alt="Get up to 50% off now"
           className="absolute top-0 right-0 transform -translate-x-1/4 md:-translate-x-1/2 scale-110"
         />

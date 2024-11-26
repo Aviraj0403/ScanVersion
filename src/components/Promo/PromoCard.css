@@ -39,18 +39,18 @@
 
 /* Define reusable styles for promo types */
 .promo-card--default {
-  --icon-url: url('/src/assets/images/promo-icon-1.svg');
-  --image-url: url('/src/assets/images/promo-1.png');
+  --icon-url: url('/assets/images/promo-icon-1.svg');
+  --image-url: url('/assets/images/promo-1.png');
 }
 
 .promo-card--mexican-pizza {
-  --icon-url: url('/src/assets/images/promo-icon-2.svg');
-  --image-url: url('/src/assets/images/promo-2.png');
+  --icon-url: url('/assets/images/promo-icon-2.svg');
+  --image-url: url('/assets/images/promo-2.png');
 }
 
 .promo-card--soft-drinks {
-  --icon-url: url('/src/assets/images/promo-icon-3.svg');
-  --image-url: url('/src/assets/images/promo-3.png');
+  --icon-url: url('/assets/images/promo-icon-3.svg');
+  --image-url: url('/assets/images/promo-3.png');
 }
 
 .promo-card-icon {
