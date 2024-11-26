@@ -7,7 +7,7 @@ const Footer = () => {
       <div
         className="footer-top"
         style={{
-          backgroundImage: "url('/src/assets/images/footer/footer-illustration.png')",
+          backgroundImage: "url('/assets/images/footer/footer-illustration.png')",
         }}
       >
         <div className="container">

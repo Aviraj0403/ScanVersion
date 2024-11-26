@@ -9,9 +9,9 @@ import TestimonialsSection from '../../components/Section/TestimonialsSection';
 import './Home.css'; // Import CSS for slider
 
 const images = [
-  '/src/assets/slideimg/slide1.jpeg',
-  '/src/assets/slideimg/slide2.jpeg',
-  '/src/assets/slideimg/slide3.jpeg',
+  '/assets/slideimg/slide1.jpeg',
+  '/assets/slideimg/slide2.jpeg',
+  '/assets/slideimg/slide3.jpeg',
 ];
 
 const Home = () => {
