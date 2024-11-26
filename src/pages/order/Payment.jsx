@@ -8,7 +8,8 @@ import io from 'socket.io-client';
 import { addOrderToHistory } from '../user/userSlice';
 
 // Set up the socket connection
-const socket = io('http://localhost:4000');
+// const socket = io('http://localhost:4000');
+const socket = io('https://backend-obet.onrender.com');
 
 const Payment = () => {
     const dispatch = useDispatch();
@@ -61,7 +62,7 @@ const Payment = () => {
         try {
             if (paymentMethod === 'Razorpay') {
                 // Step 1: Create order on your backend
-                const response = await fetch('http://localhost:4000/api/orders/create', {
+                const response = await fetch('https://backend-obet.onrender.com/api/orders/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -120,7 +121,7 @@ const Payment = () => {
                 razorpay.open();
             } else {
                 // Handle other payment methods like PayPal or Cash
-                const response = await fetch('http://localhost:4000/api/orders/create', {
+                const response = await fetch('https://backend-obet.onrender.com/api/orders/create', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
