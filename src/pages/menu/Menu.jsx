@@ -1,39 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';  // Extract restaurantId
-import { useDispatch, useSelector } from 'react-redux';  // To interact with Redux
-import { setRestaurantId, setMenuData, setFilteredMenuData } from '../Slice/RestaurantSlice';  // Correct import of actions
-import { getMenu } from '../../services/apiRestaurant';  // API function
+import { useParams, useNavigate } from 'react-router-dom';  // Import useNavigate for redirection
+import { useDispatch, useSelector } from 'react-redux';  // For Redux state management
+import { setRestaurantId } from '../Slice/RestaurantSlice';  // Redux action to set restaurantId
+import { getMenu } from '../../services/apiRestaurant';  // API call to fetch menu data
 import MenuItem from './MenuItem.jsx';
 import FoodCategoryFilter from './FilterFood.jsx';
 import Header from '../../components/Header/Header.jsx';
 
 const Menu = () => {
-  const { restaurantId } = useParams();  // Extract restaurantId from the URL
+  const { restaurantId: urlRestaurantId } = useParams();  // Get restaurantId from the URL params
   const dispatch = useDispatch();
-  const storedRestaurantId = useSelector((state) => state.restaurant.restaurantId);  // Get restaurantId from Redux state
-  const [menu, setMenu] = useState([]);  // State for storing the full menu
-  const [filteredMenu, setFilteredMenu] = useState([]);  // State for filtered menu based on user input
-  const [selectedCategory, setSelectedCategory] = useState('All');  // Selected category for filtering
-  const [foodType, setFoodType] = useState('All');  // Selected food type for filtering
-  const [searchQuery, setSearchQuery] = useState('');  // Search query for filtering
-  const [loading, setLoading] = useState(true);  // Loading state for menu data
+  const storedRestaurantId = useSelector((state) => state.restaurant.restaurantId);  // Redux state for restaurantId
+  const [menu, setMenu] = useState([]);
+  const [filteredMenu, setFilteredMenu] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [foodType, setFoodType] = useState('All');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();  // For redirection
 
-  // Synchronize the restaurantId from URL with Redux
+  // UseEffect to handle restaurantId from URL and update Redux state
   useEffect(() => {
-    if (restaurantId && restaurantId !== storedRestaurantId) {
-      dispatch(setRestaurantId(restaurantId));  // Update Redux state if the restaurantId in URL changes
+    // Check if the URL restaurantId is valid and not null
+    if (urlRestaurantId && urlRestaurantId !== storedRestaurantId) {
+      dispatch(setRestaurantId(urlRestaurantId));  // Update Redux state
+    } else if (!urlRestaurantId && storedRestaurantId) {
+      // If restaurantId is missing in the URL, redirect to the stored one (if available)
+      navigate(`/menu/${storedRestaurantId}`);
     }
-  }, [restaurantId, storedRestaurantId, dispatch]);
+  }, [urlRestaurantId, storedRestaurantId, dispatch, navigate]);
 
-  // Fetch menu data when restaurantId is available in Redux
+  // Fetch menu data based on restaurantId from Redux
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const menuData = await getMenu(storedRestaurantId);  // Fetch menu using restaurantId from Redux
-        dispatch(setMenuData(menuData));  // Dispatch action to set menu data in Redux store
+        const menuData = await getMenu(storedRestaurantId);  // Fetch menu data using Redux state restaurantId
         setMenu(menuData);
-        setFilteredMenu(menuData);  // Initialize filtered menu with full menu
+        setFilteredMenu(menuData);  // Initialize filtered menu
       } catch (error) {
         console.error('Error fetching menu data:', error);
       }
@@ -41,9 +45,9 @@ const Menu = () => {
     };
 
     if (storedRestaurantId) {
-      fetchData();  // Fetch menu data only if storedRestaurantId is available
+      fetchData();  // Fetch menu data if restaurantId exists in Redux
     }
-  }, [storedRestaurantId, dispatch]);  // Re-fetch menu if storedRestaurantId changes
+  }, [storedRestaurantId]);
 
   // Apply filters and search query
   useEffect(() => {
@@ -66,9 +70,8 @@ const Menu = () => {
       );
     }
 
-    dispatch(setFilteredMenuData(filtered));  // Dispatch filtered menu data to Redux
-    setFilteredMenu(filtered);  // Update filtered menu state
-  }, [selectedCategory, foodType, searchQuery, menu, dispatch]);  // Reapply filters when any filter or menu changes
+    setFilteredMenu(filtered);  // Update filtered menu
+  }, [selectedCategory, foodType, searchQuery, menu]);
 
   if (loading) {
     return <p>Loading menu...</p>;  // Show loading message while fetching the menu
@@ -77,7 +80,7 @@ const Menu = () => {
   return (
     <div className="menu-page">
       <Header setSearchQuery={setSearchQuery} />  {/* Header with search input */}
-      <FoodCategoryFilter onCategoryChange={setSelectedCategory} />  {/* Food category filter */}
+      <FoodCategoryFilter onCategoryChange={setSelectedCategory} />  {/* Category filter */}
       <div className="card-div mt-2 mb-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 border-t border-gray-300 pt-2 pb-4">
         {filteredMenu.length > 0 ? (
           filteredMenu.map(item => (
