@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { getMenu } from '../../services/apiRestaurant';  // API call to fetch menu data
-import { Navigation, Pagination } from 'swiper/modules';
-import 'swiper/swiper-bundle.css';
-import './menuItem.css';
 
 function FoodCategoryFilter({ onCategoryChange, restaurantId }) {
   const [categories, setCategories] = useState([]);
@@ -34,6 +31,7 @@ function FoodCategoryFilter({ onCategoryChange, restaurantId }) {
         setLoading(false);
       }
     };
+
     fetchCategories();
   }, [restaurantId]); // Re-run when restaurantId changes
 

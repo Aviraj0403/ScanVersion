@@ -20,10 +20,17 @@ const Menu = () => {
   const [error, setError] = useState(null);  // State for error handling
   const navigate = useNavigate();  // For redirection
 
+  // Log for debugging
+  console.log("URL restaurantId:", urlRestaurantId);
+  console.log("Stored restaurantId from Redux:", storedRestaurantId);
+
   // Update Redux state with restaurantId from URL or redirect if missing
   useEffect(() => {
-    if (urlRestaurantId && urlRestaurantId !== storedRestaurantId) {
-      dispatch(setRestaurantId(urlRestaurantId));  // Update Redux state with restaurantId
+    if (urlRestaurantId) {
+      if (urlRestaurantId !== storedRestaurantId) {
+        // Update Redux state with restaurantId from URL
+        dispatch(setRestaurantId(urlRestaurantId));
+      }
     } else if (!urlRestaurantId && storedRestaurantId) {
       // If restaurantId is missing from URL, redirect to stored restaurantId in Redux
       navigate(`/menu/${storedRestaurantId}`);
