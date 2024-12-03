@@ -13,7 +13,7 @@ const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/menu", element: <Menu />, loader: menuLoader }, // Attach the loader here
+      { path: "/menu/:restaurantId", element: <Menu />, loader: menuLoader }, // Attach the loader here
       { path: "/cart", element: <Cart /> },
       { path: "/order/new", element: <CreateOrder /> }, 
       { path: "/order/payment", element: <Payment /> }, 
