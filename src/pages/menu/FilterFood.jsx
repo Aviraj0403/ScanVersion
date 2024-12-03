@@ -16,6 +16,7 @@ function FoodCategoryFilter({ onCategoryChange, restaurantId }) {
   // Fetch all categories from the API based on restaurantId
   useEffect(() => {
     const fetchCategories = async () => {
+      console.log('restaurantId:', restaurantId);
       try {
         setLoading(true);
         if (!restaurantId) {
@@ -48,6 +49,7 @@ function FoodCategoryFilter({ onCategoryChange, restaurantId }) {
           const data = await getMenu(restaurantId); // Pass restaurantId to getMenu
           const filtered = data.filter(item => item.itemType === foodType).map(item => item.category);
           const uniqueFilteredCategories = Array.from(new Set(filtered)); // Unique categories based on food type
+          console.log('Filtered categories:', uniqueFilteredCategories); // Log the filtered categories
           setFilteredCategories(['All', ...uniqueFilteredCategories]);
         } catch (error) {
           console.error('Error fetching filtered categories:', error);
@@ -55,6 +57,7 @@ function FoodCategoryFilter({ onCategoryChange, restaurantId }) {
         }
       }
     };
+    
     fetchFilteredCategories();
   }, [foodType, categories, restaurantId]); // Add restaurantId to dependencies
 
