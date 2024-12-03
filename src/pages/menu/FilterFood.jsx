@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css'; // Import Swiper styles
@@ -14,50 +13,33 @@ function FoodCategoryFilter({ onCategoryChange }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        setLoading(true);
-        const data = await getMenu();
-        const uniqueCategories = Array.from(new Set(data.map(item => item.category)));
-        setCategories(['All', ...uniqueCategories]);
-        setFilteredCategories(['All', ...uniqueCategories]); // Initially show all categories
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-        setError('Failed to load categories');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchCategories();
-  }, []);
+  // Fetch categories based on foodType
+  const fetchCategories = async (foodType) => {
+    try {
+      setLoading(true);
+      const data = await getMenu();  // Make sure this is fetching the correct menu
+      const filteredData = foodType === 'All' ? data : data.filter(item => item.itemType === foodType);
+      const uniqueCategories = Array.from(new Set(filteredData.map(item => item.category)));
+      setCategories(['All', ...uniqueCategories]);
+      setFilteredCategories(['All', ...uniqueCategories]); // Initially show all categories
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      setError('Failed to load categories');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  // Fetch categories initially and when foodType changes
   useEffect(() => {
-    const fetchFilteredCategories = async () => {
-      if (foodType === 'All') {
-        setFilteredCategories(categories);
-      } else {
-        try {
-          const data = await getMenu();
-          const filtered = data.filter(item => item.itemType === foodType).map(item => item.category);
-          const uniqueFilteredCategories = Array.from(new Set(filtered));
-          setFilteredCategories(['All', ...uniqueFilteredCategories]);
-        } catch (error) {
-          console.error('Error fetching filtered categories:', error);
-          setError('Failed to filter categories');
-        }
-      }
-    };
-    fetchFilteredCategories();
-  }, [foodType, categories]);
+    fetchCategories(foodType);
+  }, [foodType]);
 
   const handleCategoryClick = async (category) => {
     if (category === 'All') {
-      // Immediately reset both foodType and category to 'All'
+      // Reset both foodType and category to 'All'
       setSelectedCategory('All');
       setFoodType('All');
-
-      // Immediately trigger onCategoryChange with 'All' values
       try {
         await onCategoryChange('All', 'All');
       } catch (error) {
@@ -90,7 +72,6 @@ function FoodCategoryFilter({ onCategoryChange }) {
   return (
     <div className="category-div mb-7">
       <div className="background-div flex flex-wrap gap-3 w-full mb-5 py-4 veg-navs border-b border-gray-200 pb-3 shadow-lg rounded-lg bg-gradient-to-r from-blue-300 via-white to-purple-200">
-
         <button
           className={`flex items-center gap-5 w-fit pl-3 pr-4 py-2 rounded-full transition transform hover:scale-105 hover:shadow-lg ${foodType === 'Veg' ? 'bg-green-500 text-white' : 'bg-[#EFF0F6] text-heading'}`}
           type="button"
@@ -146,4 +127,4 @@ function FoodCategoryFilter({ onCategoryChange }) {
   );
 }
 
-export default FoodCategoryFilter;  
+export default FoodCategoryFilter;

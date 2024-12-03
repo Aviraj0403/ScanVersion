@@ -21,11 +21,10 @@ const Menu = () => {
 
   // UseEffect to handle restaurantId from URL and update Redux state
   useEffect(() => {
-    // Check if the URL restaurantId is valid and not null
     if (urlRestaurantId && urlRestaurantId !== storedRestaurantId) {
-      dispatch(setRestaurantId(urlRestaurantId));  // Update Redux state
+      dispatch(setRestaurantId(urlRestaurantId));  // Update Redux state with restaurantId from URL
     } else if (!urlRestaurantId && storedRestaurantId) {
-      // If restaurantId is missing in the URL, redirect to the stored one (if available)
+      // If restaurantId is missing from the URL, redirect to the stored restaurantId in Redux
       navigate(`/menu/${storedRestaurantId}`);
     }
   }, [urlRestaurantId, storedRestaurantId, dispatch, navigate]);
@@ -33,15 +32,20 @@ const Menu = () => {
   // Fetch menu data based on restaurantId from Redux
   useEffect(() => {
     const fetchData = async () => {
+      if (!storedRestaurantId) {
+        console.error('Restaurant ID is missing');
+        return;
+      }
+
       setLoading(true);
       try {
-        const menuData = await getMenu(storedRestaurantId);  // Fetch menu data using Redux state restaurantId
+        const menuData = await getMenu(storedRestaurantId);  // Fetch menu data using restaurantId from Redux
         setMenu(menuData);
         setFilteredMenu(menuData);  // Initialize filtered menu
       } catch (error) {
         console.error('Error fetching menu data:', error);
+        setLoading(false);  // Make sure loading is disabled even in case of an error
       }
-      setLoading(false);
     };
 
     if (storedRestaurantId) {
@@ -73,18 +77,21 @@ const Menu = () => {
     setFilteredMenu(filtered);  // Update filtered menu
   }, [selectedCategory, foodType, searchQuery, menu]);
 
+  // If loading, show a loading message
   if (loading) {
-    return <p>Loading menu...</p>;  // Show loading message while fetching the menu
+    return <p>Loading menu...</p>;
   }
 
   return (
     <div className="menu-page">
       <Header setSearchQuery={setSearchQuery} />  {/* Header with search input */}
       <FoodCategoryFilter onCategoryChange={setSelectedCategory} />  {/* Category filter */}
+      
+      {/* Render filtered menu items */}
       <div className="card-div mt-2 mb-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 border-t border-gray-300 pt-2 pb-4">
         {filteredMenu.length > 0 ? (
           filteredMenu.map(item => (
-            <MenuItem key={item._id} fooditem={item} />  
+            <MenuItem key={item._id} fooditem={item} />  // Render menu items
           ))
         ) : (
           <p>No items found</p>  // Show message if no items match the filters
