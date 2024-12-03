@@ -17,6 +17,7 @@ const Menu = () => {
   const [foodType, setFoodType] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);  // State for error handling
   const navigate = useNavigate();  // For redirection
 
   // Update Redux state with restaurantId from URL or redirect if missing
@@ -33,7 +34,8 @@ const Menu = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (!storedRestaurantId) {
-        console.error('Restaurant ID is missing');
+        setError('Restaurant ID is missing');
+        setLoading(false);
         return;
       }
 
@@ -44,6 +46,7 @@ const Menu = () => {
         setFilteredMenu(menuData);  // Initialize filtered menu
       } catch (error) {
         console.error('Error fetching menu data:', error);
+        setError('Failed to load menu');
       }
       setLoading(false);
     };
@@ -80,6 +83,11 @@ const Menu = () => {
   // If loading, show a loading message
   if (loading) {
     return <p>Loading menu...</p>;
+  }
+
+  // If there's an error, show an error message
+  if (error) {
+    return <p>{error}</p>;
   }
 
   return (

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper-bundle.css';
-import { getMenu } from '../../services/apiRestaurant.js';
+import { getMenu } from '../../services/apiRestaurant';  // API call to fetch menu data
 import { Navigation, Pagination } from 'swiper/modules';
+import 'swiper/swiper-bundle.css';
 import './menuItem.css';
 
 function FoodCategoryFilter({ onCategoryChange, restaurantId }) {
@@ -109,52 +108,32 @@ function FoodCategoryFilter({ onCategoryChange, restaurantId }) {
           onClick={() => handleFoodTypeClick('Veg')}
           aria-pressed={foodType === 'Veg'}
         >
-          <img src="https://demo.foodscan.xyz/images/item-type/non-veg.png" alt="Veg" className="h-6" />
-          <span className="capitalize text-sm font-medium">Veg</span>
+          <img src="https://demo.foodscan.xyz/images/item-type/non-veg.png" alt="veg" className="w-6 h-6" />
+          Veg
         </button>
-
         <button
-          className={`flex items-center gap-3 w-fit pl-3 pr-4 py-2 rounded-full transition transform hover:scale-105 hover:shadow-lg ${foodType === 'Non-Veg' ? 'bg-red-500 text-white' : 'bg-[#EFF0F6] text-heading'}`}
+          className={`flex items-center gap-5 w-fit pl-3 pr-4 py-2 rounded-full transition transform hover:scale-105 hover:shadow-lg ${foodType === 'Non-Veg' ? 'bg-red-500 text-white' : 'bg-[#EFF0F6] text-heading'}`}
           type="button"
           onClick={() => handleFoodTypeClick('Non-Veg')}
           aria-pressed={foodType === 'Non-Veg'}
         >
-          <img src="https://demo.foodscan.xyz/images/item-type/veg.png" alt="Non-Veg" className="h-6" />
-          <span className="capitalize text-sm font-medium">Non-Veg</span>
+          <img src="https://demo.foodscan.xyz/images/item-type/non-veg.png" alt="non-veg" className="w-6 h-6" />
+          Non-Veg
         </button>
       </div>
 
-      {/* Swiper for category selection */}
-      <Swiper
-        modules={[Navigation, Pagination]} // Enable navigation and pagination if needed
-        direction="horizontal"
-        slidesPerView="auto"
-        spaceBetween={12}
-        className="menu-swiper"
-        style={{ direction: 'ltr', padding: 4 }} // Apply LTR styling
-        pagination={{ clickable: true }} // Enable pagination
-        navigation // Enable navigation arrows
-      >
-        {filteredCategories.map((category) => (
-          <SwiperSlide key={category} className="!w-fit">
-            <button
-              onClick={() => handleCategoryClick(category)}
-              className={`w-28 flex flex-col items-center text-center gap-1 p-3 rounded-md border transition duration-200 ease-in-out 
-                ${selectedCategory === category ? 'border-blue-500 bg-blue-500 text-white' : 'border-gray-300 bg-[#F7F7FC] hover:bg-gray-200'}`}
-              aria-pressed={selectedCategory === category}
-            >
-              <img
-                className="h-10 drop-shadow-category mb-1"
-                src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSB8N27tkV9kQ8toUQMw26UkRiHaL8W_81Bng&s`} // Ensure this URL is correct
-                alt={category}
-              />
-              <h3 className="text-xs leading-4 whitespace-nowrap overflow-hidden text-ellipsis font-medium font-rubik">
-                {category}
-              </h3>
-            </button>
-          </SwiperSlide>
+      {/* Category buttons */}
+      <div className="categories-container flex flex-wrap gap-3 justify-center mb-5">
+        {filteredCategories.map((category, index) => (
+          <button
+            key={index}
+            onClick={() => handleCategoryClick(category)}
+            className={`category-button ${selectedCategory === category ? 'bg-blue-500 text-white' : 'bg-[#EFF0F6] text-heading'}`}
+          >
+            {category}
+          </button>
         ))}
-      </Swiper>
+      </div>
     </div>
   );
 }
