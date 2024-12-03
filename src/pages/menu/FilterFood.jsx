@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper-bundle.css'; // Import Swiper styles
-import { getMenu } from '../../services/apiRestaurant.js'; // Import getMenu
-import { Navigation, Pagination } from 'swiper/modules'; // Import modules if needed
+import 'swiper/swiper-bundle.css';
+import { getMenu } from '../../services/apiRestaurant.js';
+import { Navigation, Pagination } from 'swiper/modules';
 import './menuItem.css';
 
 function FoodCategoryFilter({ onCategoryChange, restaurantId }) {
@@ -16,13 +16,15 @@ function FoodCategoryFilter({ onCategoryChange, restaurantId }) {
   // Fetch all categories from the API based on restaurantId
   useEffect(() => {
     const fetchCategories = async () => {
-      console.log('restaurantId:', restaurantId);
+      if (!restaurantId) {
+        setError('Restaurant ID is required');
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
-        if (!restaurantId) {
-          throw new Error('Restaurant ID is required');
-        }
-        const data = await getMenu(restaurantId); // Pass restaurantId to getMenu
+        const data = await getMenu(restaurantId); // Fetch data for restaurantId
         const uniqueCategories = Array.from(new Set(data.map(item => item.category))); // Get unique categories
         setCategories(['All', ...uniqueCategories]);
         setFilteredCategories(['All', ...uniqueCategories]); // Initially show all categories
@@ -34,32 +36,33 @@ function FoodCategoryFilter({ onCategoryChange, restaurantId }) {
       }
     };
     fetchCategories();
-  }, [restaurantId]); // Make sure to re-fetch if restaurantId changes
+  }, [restaurantId]); // Re-run when restaurantId changes
 
   // Fetch categories based on the selected food type
   useEffect(() => {
     const fetchFilteredCategories = async () => {
-      if (foodType === 'All') {
-        setFilteredCategories(categories); // Show all categories if food type is All
-      } else {
-        try {
-          if (!restaurantId) {
-            throw new Error('Restaurant ID is required');
-          }
-          const data = await getMenu(restaurantId); // Pass restaurantId to getMenu
+      if (!restaurantId) {
+        setError('Restaurant ID is required');
+        return;
+      }
+
+      try {
+        if (foodType === 'All') {
+          setFilteredCategories(categories); // Show all categories if food type is All
+        } else {
+          const data = await getMenu(restaurantId); // Fetch data for restaurantId
           const filtered = data.filter(item => item.itemType === foodType).map(item => item.category);
-          const uniqueFilteredCategories = Array.from(new Set(filtered)); // Unique categories based on food type
-          console.log('Filtered categories:', uniqueFilteredCategories); // Log the filtered categories
+          const uniqueFilteredCategories = Array.from(new Set(filtered)); // Get unique categories
           setFilteredCategories(['All', ...uniqueFilteredCategories]);
-        } catch (error) {
-          console.error('Error fetching filtered categories:', error);
-          setError('Failed to filter categories');
         }
+      } catch (error) {
+        console.error('Error fetching filtered categories:', error);
+        setError('Failed to filter categories');
       }
     };
-    
+
     fetchFilteredCategories();
-  }, [foodType, categories, restaurantId]); // Add restaurantId to dependencies
+  }, [foodType, categories, restaurantId]); // Re-run when foodType or restaurantId changes
 
   // Handle category click event
   const handleCategoryClick = async (category) => {
@@ -92,6 +95,7 @@ function FoodCategoryFilter({ onCategoryChange, restaurantId }) {
     }
   };
 
+  // Loading and error handling
   if (loading) return <p>Loading categories...</p>;
   if (error) return <p>{error}</p>;
 
