@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import CreateUser from '../user/CreateUser';
 import { Link } from 'react-router-dom';
 import CTASection from '../../components/Section/CTASection';
+import QRScanComponent from '../scan/QRScanComponent' 
 import DeliverySection from '../../components/Section/DeliverySection';
 import TestimonialsSection from '../../components/Section/TestimonialsSection';
 import './Home.css'; // Import CSS for slider
@@ -57,6 +58,7 @@ const Home = () => {
       </header>
 
       <div>
+      {/* <QRScanComponent /> */}
         <CTASection />
         <DeliverySection />
         <TestimonialsSection />

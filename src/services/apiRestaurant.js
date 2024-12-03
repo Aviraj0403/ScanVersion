@@ -1,8 +1,8 @@
 // const API_URL = "http://localhost:4000/api/food/66f2f1c8f2696a3714a2d1ad"; // Hardcoded food API URL
-const API_URL = "https://backend-obet.onrender.com/api/food/66f2f1c8f2696a3714a2d1ad"
+// const API_URL = "https://backend-obet.onrender.com/api/food/66f2f1c8f2696a3714a2d1ad"
 const TABLE_API_URL = "https://backend-obet.onrender.com/api/table/66f2f1c8f2696a3714a2d1ad/get-active"; // Hardcoded restaurant ID for table API
 const OFFER_API_URL = "https://backend-obet.onrender.com/api/offer/66f2f1c8f2696a3714a2d1ad/get-active"; // Corrected URL
-
+const API_URL = "https://backend-obet.onrender.com/api/food";
 async function fetchData(url, options = {}) {
   const res = await fetch(url, options);
   if (!res.ok) {
@@ -14,7 +14,7 @@ async function fetchData(url, options = {}) {
 
 // Food API Functions
 export async function getMenu() {
-  const { data } = await fetchData(`${API_URL}/list-food`);
+  const { data } = await fetchData(`${API_URL}/${restaurantId}/list-food`);
   return data;
 }
 

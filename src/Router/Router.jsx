@@ -6,6 +6,7 @@ import Cart from "../pages/cart/Cart.jsx";
 import CreateOrder from "../pages/order/CreateOrder.jsx"; 
 import Payment from "../pages/order/Payment.jsx"; 
 import Confirmation from "../pages/order/Confirmation.jsx"; 
+import ScanPage from "../pages/scan/ScanPage.jsx"; // Adjust the path accordingly
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
       { path: "/order/new", element: <CreateOrder /> }, 
       { path: "/order/payment", element: <Payment /> }, 
       { path: "/order/confirmation", element: <Confirmation /> }, 
+      { path: "/scan", element: <ScanPage /> },
     ],
   },
 ]);
