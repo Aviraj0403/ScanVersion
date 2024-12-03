@@ -1,23 +1,26 @@
-import OrderItem from "./OrderItem";
-import { useFetcher, useLoaderData } from "react-router-dom";
-import { getOrder } from "../../services/apiRestaurant";
+import { useSelector } from 'react-redux';  // Import useSelector to get data from Redux store
+import { useFetcher, useLoaderData } from 'react-router-dom';
+import { getOrder } from '../../services/apiRestaurant';
 import {
   calcMinutesLeft,
   formatCurrency,
   formatDate,
-} from "../../utils/helpers";
-import UpdateOrder from "./UpdateOrder";
-import { useEffect } from "react";
+} from '../../utils/helpers';
+import UpdateOrder from './UpdateOrder';
+import { useEffect } from 'react';
 
 const Order = () => {
+  // Access restaurantId from Redux state
+  const restaurantId = useSelector((state) => state.restaurant.restaurantId); 
+
   const order = useLoaderData();
   const fetcher = useFetcher();
 
   useEffect(() => {
-    if (!fetcher.data && fetcher.state === "idle") fetcher.load("/menu");
+    if (!fetcher.data && fetcher.state === 'idle') fetcher.load('/menu');
   }, [fetcher]);
 
-  const isLoading = fetcher.state === "loading";
+  const isLoading = fetcher.state === 'loading';
 
   const {
     id,
@@ -142,6 +145,7 @@ const Order = () => {
   );
 };
 
+// Update loader to use restaurantId from Redux if necessary
 export async function loader({ params }) {
   const order = await getOrder(params.orderId);
   return order;
