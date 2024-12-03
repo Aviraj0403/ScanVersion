@@ -1,5 +1,4 @@
-// Dynamically fetch the API URL based on restaurantId
-const BASE_API_URL = "https://backend-obet.onrender.com/api";
+const BASE_API_URL = "https://backend-obet.onrender.com/api";  // Define the base API URL
 
 // Function to fetch data from a given URL with dynamic restaurantId
 async function fetchData(url, options = {}) {
@@ -40,7 +39,6 @@ export const getFoodsByCategoryAndType = async (restaurantId, category, itemType
 // Table API Functions - with dynamic restaurantId
 export async function getDiningTables(restaurantId, status) {
   const url = status ? `${BASE_API_URL}/table/${restaurantId}/get-active?status=${status}` : `${BASE_API_URL}/table/${restaurantId}/get-active`;
-
   const { data } = await fetchData(url);
   return data;
 }

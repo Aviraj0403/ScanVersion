@@ -1,37 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';  // To extract restaurantId and tableId from URL
+import { useParams, useLoaderData } from 'react-router-dom';  // To extract restaurantId and tableId from URL
 import MenuItem from './MenuItem.jsx';
 import FoodCategoryFilter from './FilterFood.jsx';
-import { getMenu } from '../../services/apiRestaurant.js';
 import Header from '../../components/Header/Header.jsx';
+import { getMenu } from '../../services/apiRestaurant.js';
 
+// Menu component that will render the restaurant's menu
 const Menu = () => {
-  const { restaurantId, tableId } = useParams();  // Extract restaurantId and tableId from URL
-  const [menu, setMenu] = useState([]);
-  const [filteredMenu, setFilteredMenu] = useState([]);
+  const { restaurantId } = useParams(); // Extract restaurantId from URL
+  const menuData = useLoaderData();  // Get the menu data loaded by the loader
+  const [menu, setMenu] = useState(menuData || []);
+  const [filteredMenu, setFilteredMenu] = useState(menuData || []);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [foodType, setFoodType] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Fetch menu data for the restaurant using the restaurantId
-    const fetchRestaurantMenu = async () => {
-      try {
-        const menuData = await getMenu(restaurantId); // Use restaurantId in the API call
-        setMenu(menuData);
-        setFilteredMenu(menuData);
-      } catch (error) {
-        console.error('Error fetching menu:', error);
-        setMenu([]);
-        setFilteredMenu([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchRestaurantMenu();
-  }, [restaurantId]);
+    setMenu(menuData); // Set the loaded menu data
+    setFilteredMenu(menuData);
+  }, [menuData]);
 
   useEffect(() => {
     let filtered = menu;
@@ -75,11 +63,11 @@ const Menu = () => {
   );
 };
 
-// Export loader to fetch data
+// Loader function to fetch the menu dynamically based on restaurantId
 export async function loader({ params }) {
   const { restaurantId } = params;
   try {
-    const menuData = await getMenu(restaurantId);
+    const menuData = await getMenu(restaurantId);  // Fetch menu based on restaurantId
     return menuData;
   } catch (error) {
     console.error('Error loading menu data:', error);
