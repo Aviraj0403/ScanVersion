@@ -1,78 +1,76 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useLoaderData } from 'react-router-dom';  // To extract restaurantId and tableId from URL
-import MenuItem from './MenuItem.jsx';
-import FoodCategoryFilter from './FilterFood.jsx';
-import Header from '../../components/Header/Header.jsx';
-import { getMenu } from '../../services/apiRestaurant.js';
+import { useParams } from 'react-router-dom';  // Extract restaurantId
+import { getMenu, getDiningTables, getOffer } from '../../services/apiRestaurant'; // API functions
 
-// Menu component that will render the restaurant's menu
 const Menu = () => {
-  const { restaurantId } = useParams(); // Extract restaurantId from URL
-  const menuData = useLoaderData();  // Get the menu data loaded by the loader
-  const [menu, setMenu] = useState(menuData || []);
-  const [filteredMenu, setFilteredMenu] = useState(menuData || []);
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [foodType, setFoodType] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(false);
+  const { restaurantId } = useParams();  // Extract restaurantId from the URL
+  const [menu, setMenu] = useState([]);
+  const [diningTables, setDiningTables] = useState([]);
+  const [activeOffers, setActiveOffers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setMenu(menuData); // Set the loaded menu data
-    setFilteredMenu(menuData);
-  }, [menuData]);
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        // Fetch data for the menu, dining tables, and active offers
+        const menuData = await getMenu(restaurantId);
+        const tablesData = await getDiningTables(restaurantId, 'Active');
+        const offersData = await getOffer(restaurantId, 'Active');
 
-  useEffect(() => {
-    let filtered = menu;
+        // Set the fetched data to state
+        setMenu(menuData);
+        setDiningTables(tablesData);
+        setActiveOffers(offersData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+      setLoading(false);
+    };
 
-    // Apply filters
-    if (selectedCategory !== 'All') {
-      filtered = filtered.filter(item => item.category === selectedCategory);
-    }
-
-    if (foodType !== 'All') {
-      filtered = filtered.filter(item => item.itemType === foodType);
-    }
-
-    if (searchQuery) {
-      filtered = filtered.filter(item =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    setFilteredMenu(filtered);
-  }, [selectedCategory, foodType, searchQuery, menu]);
+    fetchData();
+  }, [restaurantId]);  // Dependency array ensures the effect runs when restaurantId changes
 
   if (loading) {
     return <p>Loading menu...</p>;
   }
 
   return (
-    <div className="menu-page">
-      <Header setSearchQuery={setSearchQuery} />
-      <FoodCategoryFilter onCategoryChange={setSelectedCategory} />
-      <div className="card-div mt-2 mb-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 border-t border-gray-300 pt-2 pb-4">
-        {filteredMenu.length > 0 ? (
-          filteredMenu.map(item => (
-            <MenuItem key={item._id} fooditem={item} />
-          ))
-        ) : (
-          <p>No items found</p>
-        )}
+    <div>
+      <h1>Menu for Restaurant {restaurantId}</h1>
+      {/* Render menu items */}
+      <div>
+        {menu.map(item => (
+          <div key={item.id}>
+            <h2>{item.name}</h2>
+            {/* Render other item details */}
+          </div>
+        ))}
+      </div>
+
+      {/* Display Dining Tables */}
+      <div>
+        <h2>Dining Tables</h2>
+        {diningTables.map(table => (
+          <div key={table.id}>
+            <p>Table: {table.name}</p>
+            {/* More table details */}
+          </div>
+        ))}
+      </div>
+
+      {/* Display Active Offers */}
+      <div>
+        <h2>Active Offers</h2>
+        {activeOffers.map(offer => (
+          <div key={offer.id}>
+            <p>{offer.description}</p>
+            {/* More offer details */}
+          </div>
+        ))}
       </div>
     </div>
   );
 };
-
-// Loader function to fetch the menu dynamically based on restaurantId
-export async function loader({ params }) {
-  const { restaurantId } = params;
-  try {
-    const menuData = await getMenu(restaurantId);  // Fetch menu based on restaurantId
-    return menuData;
-  } catch (error) {
-    console.error('Error loading menu data:', error);
-    return [];
-  }
-}
 
 export default Menu;

@@ -1,14 +1,13 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import CreateUser from '../user/CreateUser';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import CTASection from '../../components/Section/CTASection';
-import QRScanComponent from '../scan/QRScanComponent' 
 import DeliverySection from '../../components/Section/DeliverySection';
 import TestimonialsSection from '../../components/Section/TestimonialsSection';
-import './Home.css'; // Import CSS for slider
+import './Home.css';
 
+// Image slider (unchanged)
 const images = [
   '/assets/slideimg/slide1.jpeg',
   '/assets/slideimg/slide2.jpeg',
@@ -18,6 +17,11 @@ const images = [
 const Home = () => {
   const username = useSelector((state) => state.user.name);
   const [currentImage, setCurrentImage] = useState(0);
+
+  // Extract restaurantId from URL query parameters using useLocation hook
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const restaurantId = queryParams.get('restaurantId'); // Get the restaurantId from the query string
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -37,7 +41,7 @@ const Home = () => {
         {username === "" ? (
           <CreateUser />
         ) : (
-          <Link to="/menu" className="bg-orange-500 text-white px-6 py-3 rounded hover:bg-orange-600 transition-colors">
+          <Link to={`/menu/${restaurantId}`} className="bg-orange-500 text-white px-6 py-3 rounded hover:bg-orange-600 transition-colors">
             Continue ordering, {username}!
           </Link>
         )}
@@ -58,7 +62,6 @@ const Home = () => {
       </header>
 
       <div>
-      {/* <QRScanComponent /> */}
         <CTASection />
         <DeliverySection />
         <TestimonialsSection />
