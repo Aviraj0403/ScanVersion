@@ -1,32 +1,48 @@
 // src/App.js
-
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { restoreOrders } from './pages/order/orderSlice'; // Adjust the path as necessary
+import { useNavigate, useLocation } from 'react-router-dom';
 import { PersistGate } from 'redux-persist/integration/react';
-import { store, persistor } from './store'; 
-import { RouterProvider } from "react-router-dom";
-import router from "./Router/Router.jsx"; 
-import Footer from "./components/Footer/footer.jsx"; 
-import { OrderProvider } from './contexts/OrderContext.jsx'; // Adjust path as necessary
+import { RouterProvider } from 'react-router-dom';
+import { store, persistor } from './store'; // Redux store and persistor
+import { restoreOrders } from './pages/order/orderSlice'; // Action to restore orders
+import { setRestaurantId } from './pages/Slice/RestaurantSlice.js'; // Redux action to set restaurantId
+import router from './Router/Router.jsx';
+import Footer from './components/Footer/Footer';
+import { OrderProvider } from './contexts/OrderContext.jsx'; // Custom context for orders
 
-function App() {
-    const dispatch = useDispatch();
+const App = () => {
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const persistedData = JSON.parse(localStorage.getItem('persist:root')) || {};
-        const orders = persistedData.order ? JSON.parse(persistedData.order).tempOrders : [];
-        dispatch(restoreOrders(orders));
-    }, [dispatch]);
+  useEffect(() => {
+    // Extract restaurantId from the URL query params
+    const queryParams = new URLSearchParams(location.search);
+    const restaurantIdFromURL = queryParams.get('restaurantId');
 
-    return (
-        <PersistGate loading={null} persistor={persistor}>
-            <OrderProvider>
-                <RouterProvider router={router} />
-                <Footer />
-            </OrderProvider>
-        </PersistGate>
-    );
-}
+    if (restaurantIdFromURL) {
+      dispatch(setRestaurantId(restaurantIdFromURL)); // Dispatch to Redux
+    } else {
+      navigate('/'); // Redirect to error page if restaurantId is missing
+    }
+  }, [location, dispatch, navigate]);
+
+  useEffect(() => {
+    // Restore orders from localStorage
+    const persistedData = JSON.parse(localStorage.getItem('persist:root')) || {};
+    const orders = persistedData.order ? JSON.parse(persistedData.order).tempOrders : [];
+    dispatch(restoreOrders(orders));
+  }, [dispatch]);
+
+  return (
+    <PersistGate loading={null} persistor={persistor}>
+      <OrderProvider>
+        <RouterProvider router={router} />
+        <Footer />
+      </OrderProvider>
+    </PersistGate>
+  );
+};
 
 export default App;
