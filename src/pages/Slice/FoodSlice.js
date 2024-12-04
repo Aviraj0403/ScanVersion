@@ -1,14 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 // Create an async action to fetch food items based on restaurantId
-export const fetchFoods = createAsyncThunk(
-  'food/fetchFoods',
-  async (restaurantId) => {
-    const response = await fetch(`/api/foods?restaurantId=${restaurantId}`);
-    if (!response.ok) throw new Error('Failed to fetch foods');
-    return response.json();
-  }
-);
+export const fetchFoods = createAsyncThunk('food/fetchFoods', async (restaurantId) => {
+  const response = await fetch(`/api/foods?restaurantId=${restaurantId}`);  // Pass the restaurantId in the API call
+  if (!response.ok) throw new Error('Failed to fetch foods');
+  return response.json();
+});
 
 const foodSlice = createSlice({
   name: "food",
@@ -39,5 +36,6 @@ const foodSlice = createSlice({
   },
 });
 
+// Export actions and reducer
 export const { clearFoods } = foodSlice.actions;
 export default foodSlice.reducer;

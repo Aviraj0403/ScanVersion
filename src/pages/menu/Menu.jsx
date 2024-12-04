@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';  // For URL params and redirection
 import { useDispatch, useSelector } from 'react-redux';  // For Redux state management
 import { setRestaurantId } from '../Slice/RestaurantSlice';  // Redux action for setting restaurantId
-import { fetchFoods } from '../Slice/FoodSlice';  // Fetch food items action from Redux
+import { fetchFoods } from '../../Slice/FoodSlice';  // Fetch food items action from Redux
 import MenuItem from './MenuItem.jsx';
 import FoodCategoryFilter from './FilterFood.jsx';
 import Header from '../../components/Header/Header.jsx';
@@ -34,7 +34,7 @@ const Menu = () => {
   // Fetch food items based on restaurantId from Redux
   useEffect(() => {
     if (storedRestaurantId) {
-      dispatch(fetchFoods(storedRestaurantId));  // Dispatch the action to fetch foods
+      dispatch(fetchFoods(storedRestaurantId));  // Dispatch the action to fetch foods with restaurantId
     }
   }, [storedRestaurantId, dispatch]);
 
