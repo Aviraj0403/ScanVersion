@@ -1,10 +1,11 @@
+// src/contexts/OrderContext.jsx
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setActiveTables, setActiveOffers, storeOrderTemporarily, setOrderDetails } from '../pages/order/orderSlice';
 import { fetchActiveDiningTables, fetchActiveOffer } from '../services/apiRestaurant';
 import useSocket from '../hooks/useSocket';
 
-// Create context for orders
 const OrderContext = createContext();
 
 export const OrderProvider = ({ children, restaurantId }) => {
@@ -12,9 +13,8 @@ export const OrderProvider = ({ children, restaurantId }) => {
   const [activeTables, setActiveTablesState] = useState([]);
   const [activeOffers, setActiveOffersState] = useState([]);
   const [tempOrders, setTempOrders] = useState([]);
-  const [error, setError] = useState(null); // To handle error state for fetching data
+  const [error, setError] = useState(null); // Error state for fetching data
 
-  // Fetch the initial data (tables and offers) for the given restaurant
   useEffect(() => {
     if (!restaurantId) return; // Prevent fetching if no restaurantId is provided
 
@@ -24,10 +24,6 @@ export const OrderProvider = ({ children, restaurantId }) => {
           fetchActiveDiningTables(restaurantId),
           fetchActiveOffer(restaurantId),
         ]);
-
-        // Log fetched data for debugging
-        console.log("Fetched Active Tables:", tables);
-        console.log("Fetched Active Offers:", offers);
 
         setActiveTablesState(tables || []);
         setActiveOffersState(offers || []);
@@ -42,7 +38,7 @@ export const OrderProvider = ({ children, restaurantId }) => {
     };
 
     fetchData();
-  }, [dispatch, restaurantId]); // Adding restaurantId to the dependency array ensures fetchData runs when restaurantId changes
+  }, [dispatch, restaurantId]); // Fetch when restaurantId changes
 
   // Use socket connection to handle real-time updates
   useSocket((data) => {
@@ -76,11 +72,10 @@ export const OrderProvider = ({ children, restaurantId }) => {
     }
   });
 
-  // Clean up the socket connection when the component unmounts
+  // Cleanup socket on unmount
   useEffect(() => {
     return () => {
-      // Cleanup any socket listeners here if needed (depending on your useSocket hook)
-      console.log("Cleanup socket connection");
+      // Ensure socket cleanup here if your `useSocket` hook supports cleanup
     };
   }, []);
 
@@ -90,7 +85,7 @@ export const OrderProvider = ({ children, restaurantId }) => {
   }
 
   return (
-    <OrderContext.Provider value={{ activeTables, activeOffers, tempOrders, error }}>
+    <OrderContext.Provider value={{ activeTables, activeOffers, tempOrders, error, restaurantId }}>
       {children}
     </OrderContext.Provider>
   );
