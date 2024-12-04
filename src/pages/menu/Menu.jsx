@@ -100,10 +100,15 @@ const Menu = () => {
   return (
     <div className="menu-page">
       <Header setSearchQuery={setSearchQuery} />  {/* Header with search input */}
-      <FoodCategoryFilter onCategoryChange={(category, type) => {
-        setSelectedCategory(category);
-        setFoodType(type);
-      }} />  {/* Category filter */}
+      
+      {/* Pass restaurantId to FoodCategoryFilter */}
+      <FoodCategoryFilter 
+        onCategoryChange={(category, type) => {
+          setSelectedCategory(category);
+          setFoodType(type);
+        }}
+        restaurantId={storedRestaurantId}  // Pass the restaurantId here
+      />
       
       {/* Render filtered menu items */}
       <div className="card-div mt-2 mb-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 border-t border-gray-300 pt-2 pb-4">

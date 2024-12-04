@@ -94,10 +94,15 @@ function FoodCategoryFilter({ onCategoryChange, restaurantId }) {
 
   // Loading and error handling
   if (loading) return <p>Loading categories...</p>;
-  if (error) return <p>{error}</p>;
+  if (error) return <p>{error}</p>;  // Show error if there is an error
 
   return (
     <div className="category-div mb-7">
+      {/* Error message display */}
+      {error && <div className="error-message" style={{ color: 'red', marginBottom: '10px' }}>
+        {error}  {/* Display the error message */}
+      </div>}
+
       {/* Food type buttons */}
       <div className="background-div flex flex-wrap gap-3 w-full mb-5 py-4 veg-navs border-b border-gray-200 pb-3 shadow-lg rounded-lg bg-gradient-to-r from-blue-300 via-white to-purple-200">
         <button
