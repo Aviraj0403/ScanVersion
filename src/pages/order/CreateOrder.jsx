@@ -11,8 +11,6 @@ import { fetchFoods } from "../../pages/Slice/FoodSlice"; // Import fetch action
 import { fetchOffers } from "../../pages/Slice/OfferSlice"; // Import fetch action
 import { fetchTables } from "../../pages/Slice/TableSlice"; // Import fetch action
 
-const restaurantId = "66f2f1c8f2696a3714a2d1ad";
-
 const isValidPhone = (str) =>
   /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/.test(str);
 
@@ -25,19 +23,27 @@ const CreateOrder = () => {
     const navigate = useNavigate();
     const cart = useSelector((state) => state.cart.cart);
     const totalCartPrice = useSelector(getTotalCartPrice);
-    const { activeTables, activeOffers } = useOrderContext();
+    
+    // Get restaurantId from context or fallback to Redux (if available)
+    const { activeTables, activeOffers, restaurantId } = useOrderContext() || {}; // OrderContext may provide restaurantId
+    const reduxRestaurantId = useSelector((state) => state.restaurant?.restaurantId); // Assuming restaurantId is in Redux store
 
-    // Fetch foods, offers, and tables when the component mounts
+    const currentRestaurantId = restaurantId || reduxRestaurantId; // Fallback to Redux if context is unavailable
+
     useEffect(() => {
+        if (!currentRestaurantId) return; // Exit early if no restaurantId is available
+
+        // Fetch foods, offers, and tables when the component mounts
         dispatch(fetchFoods());
         dispatch(fetchOffers());
         dispatch(fetchTables());
-    }, [dispatch]);
+    }, [dispatch, currentRestaurantId]); // Re-run when restaurantId changes
     
     useEffect(() => {
         console.log('Active Offers from Redux:', activeOffers);
         console.log('Active Tables from Redux:', activeTables); // Debugging the active offers
     }, [activeOffers]);
+
     const totalPrice = useMemo(() => {
         const priorityPrice = withPriority ? totalCartPrice * 0.2 : 0;
         const offerDiscount = selectedOffer ? (totalCartPrice * (Number(selectedOffer.discountPercentage) || 0) / 100) : 0;
@@ -69,7 +75,7 @@ const CreateOrder = () => {
         const order = {
             customer: e.target.customer.value.trim(),
             phone: e.target.phone.value.trim(),
-            restaurantId,
+            restaurantId: currentRestaurantId, // Use dynamic restaurantId
             selectedTable,
             selectedOffer: selectedOffer?._id || null,
             cart: cart.map(item => ({
