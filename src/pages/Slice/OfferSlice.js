@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// Fetch offers using an async thunk
-export const fetchOffers = createAsyncThunk('offer/fetchOffers', async () => {
-  const response = await fetch('/api/offers'); // Update with your actual endpoint
+// Fetch offers using async thunk
+export const fetchOffers = createAsyncThunk('offer/fetchOffers', async (restaurantId) => {
+  const response = await fetch(`/api/offers?restaurantId=${restaurantId}`); // Update with your actual endpoint
   if (!response.ok) throw new Error('Failed to fetch offers');
   return response.json();
 });
@@ -10,17 +10,24 @@ export const fetchOffers = createAsyncThunk('offer/fetchOffers', async () => {
 const offerSlice = createSlice({
   name: "offer",
   initialState: {
-    offers: [], // Stores fetched offers
+    offers: [],
+    loading: false,
     error: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(fetchOffers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(fetchOffers.fulfilled, (state, action) => {
-        state.offers = action.payload; // Store fetched offers
+        state.offers = action.payload;
+        state.loading = false;
       })
       .addCase(fetchOffers.rejected, (state, action) => {
-        state.error = action.error.message; // Store error if any
+        state.error = action.error.message;
+        state.loading = false;
       });
   },
 });

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setRestaurantId } from '../Slice/RestaurantSlice';
@@ -20,6 +20,7 @@ const Menu = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // Update the restaurant ID in Redux and handle menu fetching
   useEffect(() => {
     if (urlRestaurantId) {
       if (urlRestaurantId !== storedRestaurantId) {
@@ -30,6 +31,7 @@ const Menu = () => {
     }
   }, [urlRestaurantId, storedRestaurantId, dispatch, navigate]);
 
+  // Fetch menu data from API
   useEffect(() => {
     const fetchData = async () => {
       if (!storedRestaurantId) {
@@ -55,7 +57,8 @@ const Menu = () => {
     }
   }, [storedRestaurantId]);
 
-  useEffect(() => {
+  // Filter menu based on selected filters (memoized for performance)
+  const filterMenu = useCallback(() => {
     let filtered = menu;
 
     if (selectedCategory !== 'All') {
@@ -73,8 +76,14 @@ const Menu = () => {
     }
 
     setFilteredMenu(filtered);
-  }, [selectedCategory, foodType, searchQuery, menu]);
+  }, [menu, selectedCategory, foodType, searchQuery]);
 
+  // Apply filters when state changes
+  useEffect(() => {
+    filterMenu();
+  }, [selectedCategory, foodType, searchQuery, menu, filterMenu]);
+
+  // Display loading or error states
   if (loading) {
     return <p>Loading menu...</p>;
   }

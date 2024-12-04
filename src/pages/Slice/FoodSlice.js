@@ -1,9 +1,24 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-export const fetchFoods = createAsyncThunk('food/fetchFoods', async () => {
-  const response = await fetch('/api/foods'); // Update with your actual endpoint
-  if (!response.ok) throw new Error('Failed to fetch foods');
-  return response.json();
+// Fetch foods using async thunk
+export const fetchFoods = createAsyncThunk('food/fetchFoods', async (restaurantId) => {
+  if (!restaurantId) {
+    console.error('Restaurant ID is missing');
+    throw new Error('Restaurant ID is missing');
+  }
+
+  console.log('Fetching foods for restaurant ID:', restaurantId); // Debugging log
+
+  const response = await fetch(`/api/foods?restaurantId=${restaurantId}`); // Update with your actual endpoint
+  if (!response.ok) {
+    console.error('Failed to fetch foods', response.statusText); // Debugging log
+    throw new Error('Failed to fetch foods');
+  }
+
+  const data = await response.json();
+  console.log('Fetched foods:', data); // Debugging log
+
+  return data;
 });
 
 const foodSlice = createSlice({
@@ -35,6 +50,5 @@ const foodSlice = createSlice({
   },
 });
 
-// Export actions and reducer
 export const { clearFoods } = foodSlice.actions;
 export default foodSlice.reducer;
