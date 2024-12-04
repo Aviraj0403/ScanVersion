@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';  // For URL params and redirection
-import { useDispatch, useSelector } from 'react-redux';  // For Redux state management
-import { setRestaurantId } from '../Slice/RestaurantSlice';  // Redux action for setting restaurantId
-import { getMenu } from '../../services/apiRestaurant';  // API call to fetch menu data
+import { useParams, useNavigate } from 'react-router-dom'; // For URL params and redirection
+import { useDispatch, useSelector } from 'react-redux'; // For Redux state management
+import { setRestaurantId } from '../Slice/RestaurantSlice'; // Redux action for setting restaurantId
+import { getMenu } from '../../services/apiRestaurant'; // API call to fetch menu data
 import MenuItem from './MenuItem.jsx';
 import FoodCategoryFilter from './FilterFood.jsx';
 import Header from '../../components/Header/Header.jsx';
 
 const Menu = () => {
-  const { restaurantId: urlRestaurantId } = useParams();  // Get restaurantId from URL
+  const { restaurantId: urlRestaurantId } = useParams(); // Get restaurantId from URL
   const dispatch = useDispatch();
-  const storedRestaurantId = useSelector((state) => state.restaurant.restaurantId);  // Get restaurantId from Redux
+  const storedRestaurantId = useSelector((state) => state.restaurant.restaurantId); // Get restaurantId from Redux
   const [menu, setMenu] = useState([]);
   const [filteredMenu, setFilteredMenu] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [foodType, setFoodType] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);  // State for error handling
-  const navigate = useNavigate();  // For redirection
+  const [error, setError] = useState(null); // State for error handling
+  const navigate = useNavigate(); // For redirection
 
   // Log for debugging
   console.log("URL restaurantId:", urlRestaurantId);
@@ -48,9 +48,9 @@ const Menu = () => {
 
       setLoading(true);
       try {
-        const menuData = await getMenu(storedRestaurantId);  // Fetch menu data using restaurantId
+        const menuData = await getMenu(storedRestaurantId); // Fetch menu data using restaurantId
         setMenu(menuData);
-        setFilteredMenu(menuData);  // Initialize filtered menu
+        setFilteredMenu(menuData); // Initialize filtered menu
       } catch (error) {
         console.error('Error fetching menu data:', error);
         setError('Failed to load menu');
@@ -59,7 +59,7 @@ const Menu = () => {
     };
 
     if (storedRestaurantId) {
-      fetchData();  // Fetch menu data if restaurantId exists
+      fetchData(); // Fetch menu data if restaurantId exists
     }
   }, [storedRestaurantId]);
 
@@ -84,7 +84,7 @@ const Menu = () => {
       );
     }
 
-    setFilteredMenu(filtered);  // Update filtered menu
+    setFilteredMenu(filtered); // Update filtered menu
   }, [selectedCategory, foodType, searchQuery, menu]);
 
   // If loading, show a loading message
@@ -99,7 +99,7 @@ const Menu = () => {
 
   return (
     <div className="menu-page">
-      <Header setSearchQuery={setSearchQuery} />  {/* Header with search input */}
+      <Header setSearchQuery={setSearchQuery} /> {/* Header with search input */}
       
       {/* Pass restaurantId to FoodCategoryFilter */}
       <FoodCategoryFilter 
@@ -114,10 +114,10 @@ const Menu = () => {
       <div className="card-div mt-2 mb-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 border-t border-gray-300 pt-2 pb-4">
         {filteredMenu.length > 0 ? (
           filteredMenu.map(item => (
-            <MenuItem key={item._id} fooditem={item} />  // Render menu items
+            <MenuItem key={item._id} fooditem={item} /> {/* Render menu items */}
           ))
         ) : (
-          <p>No items found</p>  // Show message if no items match the filters
+          <p>No items found</p> {/* Show message if no items match the filters */}
         )}
       </div>
     </div>
