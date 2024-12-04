@@ -8,7 +8,7 @@ import { store, persistor } from './store'; // Redux store and persistor
 import { restoreOrders } from './pages/order/orderSlice'; // Action to restore orders
 import { setRestaurantId } from './pages/Slice/RestaurantSlice.js'; // Redux action to set restaurantId
 import router from './Router/Router.jsx';
-import Footer from './components/Footer/Footer';
+import Footer from './components/Footer/footer.jsx';
 import { OrderProvider } from './contexts/OrderContext.jsx'; // Custom context for orders
 
 const App = () => {
