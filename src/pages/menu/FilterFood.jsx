@@ -111,8 +111,8 @@ function FoodCategoryFilter({ onCategoryChange, restaurantId }) {
           onClick={() => handleFoodTypeClick('Veg')}
           aria-pressed={foodType === 'Veg'}
         >
-          <img src="https://demo.foodscan.xyz/images/item-type/non-veg.png" alt="Veg" className="w-6 h-6" />
-          <span className="capitalize text-sm font-medium">Veg</span>
+          <img src="https://demo.foodscan.xyz/images/item-type/non-veg.png" alt="veg" className="w-6 h-6" />
+          Veg
         </button>
         <button
           className={`flex items-center gap-5 w-fit pl-3 pr-4 py-2 rounded-full transition transform hover:scale-105 hover:shadow-lg ${foodType === 'Non-Veg' ? 'bg-red-500 text-white' : 'bg-[#EFF0F6] text-heading'}`}
@@ -120,8 +120,8 @@ function FoodCategoryFilter({ onCategoryChange, restaurantId }) {
           onClick={() => handleFoodTypeClick('Non-Veg')}
           aria-pressed={foodType === 'Non-Veg'}
         >
-          <img src="https://demo.foodscan.xyz/images/item-type/non-veg.png" alt="Non-Veg" className="w-6 h-6" />
-          <span className="capitalize text-sm font-medium">Non-Veg</span>
+          <img src="https://demo.foodscan.xyz/images/item-type/non-veg.png" alt="non-veg" className="w-6 h-6" />
+          Non-Veg
         </button>
       </div>
 
