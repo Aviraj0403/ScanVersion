@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom'; // For getting `restaurantId` from the URL
 import { setActiveTables, setActiveOffers, storeOrderTemporarily, setOrderDetails } from '../pages/order/orderSlice';
 import { fetchActiveDiningTables, fetchActiveOffer } from '../services/apiRestaurant';
 import useSocket from '../hooks/useSocket';
@@ -8,14 +9,23 @@ const OrderContext = createContext();
 
 export const OrderProvider = ({ children }) => {
   const dispatch = useDispatch();
-  const restaurantId = useSelector(state => state.restaurant.id); // Assuming restaurantId is in Redux
+  
+  // Get restaurantId from Redux store
+  const restaurantIdFromRedux = useSelector(state => state.restaurant.id);
+  
+  // Get restaurantId from URL using React Router's useParams hook
+  const { restaurantId: restaurantIdFromUrl } = useParams();
+
+  // Use restaurantId from Redux or URL (URL will take priority if both exist)
+  const restaurantId = restaurantIdFromRedux || restaurantIdFromUrl;
+ console.log(restaurantId)
   const [activeTables, setActiveTablesState] = useState([]);
   const [activeOffers, setActiveOffersState] = useState([]);
   const [tempOrders, setTempOrders] = useState([]);
   const [error, setError] = useState(null);
-
+  
   useEffect(() => {
-    if (!restaurantId) return;
+    if (!restaurantId) return; // Prevent fetching if no restaurantId is provided
 
     const fetchData = async () => {
       try {
