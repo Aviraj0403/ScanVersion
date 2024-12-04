@@ -1,22 +1,21 @@
-// src/contexts/OrderContext.jsx
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setActiveTables, setActiveOffers, storeOrderTemporarily, setOrderDetails } from '../pages/order/orderSlice';
 import { fetchActiveDiningTables, fetchActiveOffer } from '../services/apiRestaurant';
 import useSocket from '../hooks/useSocket';
 
 const OrderContext = createContext();
 
-export const OrderProvider = ({ children, restaurantId }) => {
+export const OrderProvider = ({ children }) => {
   const dispatch = useDispatch();
+  const restaurantId = useSelector(state => state.restaurant.id); // Assuming restaurantId is in Redux
   const [activeTables, setActiveTablesState] = useState([]);
   const [activeOffers, setActiveOffersState] = useState([]);
   const [tempOrders, setTempOrders] = useState([]);
-  const [error, setError] = useState(null); // Error state for fetching data
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!restaurantId) return; // Prevent fetching if no restaurantId is provided
+    if (!restaurantId) return;
 
     const fetchData = async () => {
       try {
@@ -27,20 +26,17 @@ export const OrderProvider = ({ children, restaurantId }) => {
 
         setActiveTablesState(tables || []);
         setActiveOffersState(offers || []);
-
-        // Dispatch actions to update Redux store
         dispatch(setActiveTables(tables || []));
         dispatch(setActiveOffers(offers || []));
       } catch (error) {
         console.error('Failed to fetch initial data:', error);
-        setError('Failed to fetch tables and offers. Please try again later.'); // Set error state
+        setError('Failed to fetch tables and offers. Please try again later.');
       }
     };
 
     fetchData();
-  }, [dispatch, restaurantId]); // Fetch when restaurantId changes
+  }, [dispatch, restaurantId]);
 
-  // Use socket connection to handle real-time updates
   useSocket((data) => {
     switch (data.type) {
       case 'tablesUpdated':
@@ -57,13 +53,13 @@ export const OrderProvider = ({ children, restaurantId }) => {
           const orderIndex = updatedOrders.findIndex((order) => order.id === data.order.id);
 
           if (orderIndex >= 0) {
-            updatedOrders[orderIndex] = data.order; // Update existing order
+            updatedOrders[orderIndex] = data.order;
           } else {
-            updatedOrders.push(data.order); // Add new order
+            updatedOrders.push(data.order);
           }
 
-          dispatch(storeOrderTemporarily(data.order)); // Dispatch temporary order
-          dispatch(setOrderDetails(data.order)); // Dispatch complete order details
+          dispatch(storeOrderTemporarily(data.order));
+          dispatch(setOrderDetails(data.order));
           return updatedOrders;
         });
         break;
@@ -72,15 +68,7 @@ export const OrderProvider = ({ children, restaurantId }) => {
     }
   });
 
-  // Cleanup socket on unmount
-  useEffect(() => {
-    return () => {
-      // Ensure socket cleanup here if your `useSocket` hook supports cleanup
-    };
-  }, []);
-
   if (error) {
-    // Handle error state by displaying it to the user or redirecting
     return <div>Error: {error}</div>;
   }
 

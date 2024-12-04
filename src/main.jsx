@@ -1,4 +1,3 @@
-// src/index.js
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
@@ -7,7 +6,6 @@ import "./index.css";
 import { Provider } from "react-redux";
 import { store, persistor } from "./store.js"; // Import the store and persistor
 import { PersistGate } from 'redux-persist/integration/react'; // Import PersistGate
-import { BrowserRouter } from "react-router-dom"; // Import BrowserRouter
 
 // Registering Service Worker
 if ('serviceWorker' in navigator) {
@@ -26,10 +24,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        {/* Wrap your app in BrowserRouter to provide routing context */}
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <App />
       </PersistGate>
     </Provider>
   </React.StrictMode>
