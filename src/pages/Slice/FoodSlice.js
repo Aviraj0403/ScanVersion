@@ -1,25 +1,24 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getMenu } from '../../services/apiRestaurant';  // Import your custom API function
 
-// Fetch foods using async thunk
-export const fetchFoods = createAsyncThunk('food/fetchFoods', async (restaurantId) => {
-  if (!restaurantId) {
-    console.error('Restaurant ID is missing');
-    throw new Error('Restaurant ID is missing');
+// Create AsyncThunk to fetch foods for a specific restaurant using dynamic restaurantId
+export const fetchFoods = createAsyncThunk(
+  'food/fetchFoods',
+  async (restaurantId, { rejectWithValue }) => {
+    if (!restaurantId) {
+      throw new Error('Restaurant ID is required');
+    }
+
+    try {
+      // Fetch the food menu for the given restaurantId using the custom API function
+      const data = await getMenu(restaurantId);
+      return data;  // Return the fetched data to Redux
+    } catch (error) {
+      // If an error occurs, reject the promise with the error message
+      return rejectWithValue(error.message);
+    }
   }
-
-  console.log('Fetching foods for restaurant ID:', restaurantId); // Debugging log
-
-  const response = await fetch(`/api/foods?restaurantId=${restaurantId}`); // Update with your actual endpoint
-  if (!response.ok) {
-    console.error('Failed to fetch foods', response.statusText); // Debugging log
-    throw new Error('Failed to fetch foods');
-  }
-
-  const data = await response.json();
-  console.log('Fetched foods:', data); // Debugging log
-
-  return data;
-});
+);
 
 const foodSlice = createSlice({
   name: "food",
@@ -37,18 +36,19 @@ const foodSlice = createSlice({
     builder
       .addCase(fetchFoods.pending, (state) => {
         state.loading = true;
-        state.error = null;
+        state.error = null; // Reset error state
       })
       .addCase(fetchFoods.fulfilled, (state, action) => {
-        state.foods = action.payload;
-        state.loading = false;
+        state.foods = action.payload;  // Store fetched foods in the state
+        state.loading = false;         // Stop loading
       })
       .addCase(fetchFoods.rejected, (state, action) => {
-        state.error = action.error.message;
-        state.loading = false;
+        state.error = action.payload || action.error.message;  // Store the error message
+        state.loading = false;  // Stop loading
       });
   },
 });
 
+// Export actions and reducer
 export const { clearFoods } = foodSlice.actions;
 export default foodSlice.reducer;

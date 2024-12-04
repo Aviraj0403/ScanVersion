@@ -1,11 +1,24 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getOffer } from '../../services/apiRestaurant';  // Import your custom API function
 
-// Fetch offers using async thunk
-export const fetchOffers = createAsyncThunk('offer/fetchOffers', async (restaurantId) => {
-  const response = await fetch(`/api/offers?restaurantId=${restaurantId}`); // Update with your actual endpoint
-  if (!response.ok) throw new Error('Failed to fetch offers');
-  return response.json();
-});
+// Create AsyncThunk to fetch offers for a specific restaurant using dynamic restaurantId
+export const fetchOffers = createAsyncThunk(
+  'offer/fetchOffers',
+  async (restaurantId, { rejectWithValue }) => {
+    if (!restaurantId) {
+      throw new Error('Restaurant ID is required');
+    }
+
+    try {
+      // Fetch the offers for the given restaurantId using the custom API function
+      const data = await getOffer(restaurantId, 'Active'); // Example: Fetch active offers
+      return data;  // Return the fetched data to Redux
+    } catch (error) {
+      // If an error occurs, reject the promise with the error message
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 const offerSlice = createSlice({
   name: "offer",
@@ -22,11 +35,11 @@ const offerSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchOffers.fulfilled, (state, action) => {
-        state.offers = action.payload;
+        state.offers = action.payload;  // Store fetched offers in the state
         state.loading = false;
       })
       .addCase(fetchOffers.rejected, (state, action) => {
-        state.error = action.error.message;
+        state.error = action.payload || action.error.message;  // Store the error message
         state.loading = false;
       });
   },
