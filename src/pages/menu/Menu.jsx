@@ -114,10 +114,10 @@ const Menu = () => {
       <div className="card-div mt-2 mb-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 border-t border-gray-300 pt-2 pb-4">
         {filteredMenu.length > 0 ? (
           filteredMenu.map(item => (
-            <MenuItem key={item._id} fooditem={item} /> {/* Render menu items */}
+            <MenuItem key={item._id} fooditem={item} />
           ))
         ) : (
-          <p>No items found</p> {/* Show message if no items match the filters */}
+          <p>No items found</p>
         )}
       </div>
     </div>
