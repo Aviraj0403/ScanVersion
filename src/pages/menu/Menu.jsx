@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { setRestaurantId } from '../Slice/RestaurantSlice'; // Redux action to set restaurantId
-import { fetchFoods } from '../Slice/FoodSlice';  // Async action for fetching food items
-import { fetchOffers } from '../Slice/OfferSlice';  // Async action for fetching offers
-import { fetchTables } from '../Slice/TableSlice';  // Async action for fetching tables
+import { useParams, useNavigate } from 'react-router-dom';  // For URL params and redirection
+import { useDispatch, useSelector } from 'react-redux';  // For Redux state management
+import { setRestaurantId } from '../Slice/RestaurantSlice';  // Redux action for setting restaurantId
+import { getMenu } from '../../services/apiRestaurant';  // API call to fetch menu data
 import MenuItem from './MenuItem.jsx';
 import FoodCategoryFilter from './FilterFood.jsx';
 import Header from '../../components/Header/Header.jsx';
@@ -19,8 +17,8 @@ const Menu = () => {
   const [foodType, setFoodType] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const [error, setError] = useState(null);  // State for error handling
+  const navigate = useNavigate();  // For redirection
 
   // Log for debugging
   console.log("URL restaurantId:", urlRestaurantId);
@@ -39,7 +37,7 @@ const Menu = () => {
     }
   }, [urlRestaurantId, storedRestaurantId, dispatch, navigate]);
 
-  // Fetch foods, offers, and tables based on restaurantId from Redux
+  // Fetch menu data based on restaurantId from Redux
   useEffect(() => {
     const fetchData = async () => {
       if (!storedRestaurantId) {
@@ -50,27 +48,22 @@ const Menu = () => {
 
       setLoading(true);
       try {
-        // Fetch food data
-        await dispatch(fetchFoods(storedRestaurantId)); 
-
-        // Fetch offers data
-        await dispatch(fetchOffers(storedRestaurantId));  
-
-        // Fetch tables data
-        await dispatch(fetchTables(storedRestaurantId)); 
+        const menuData = await getMenu(storedRestaurantId);  // Fetch menu data using restaurantId
+        setMenu(menuData);
+        setFilteredMenu(menuData);  // Initialize filtered menu
       } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('Failed to load data');
+        console.error('Error fetching menu data:', error);
+        setError('Failed to load menu');
       }
       setLoading(false);
     };
 
     if (storedRestaurantId) {
-      fetchData();  // Fetch data when restaurantId is set
+      fetchData();  // Fetch menu data if restaurantId exists
     }
-  }, [storedRestaurantId, dispatch]);
+  }, [storedRestaurantId]);
 
-  // Apply filters and search query to the menu
+  // Apply filters and search query
   useEffect(() => {
     let filtered = menu;
 
@@ -107,7 +100,7 @@ const Menu = () => {
   return (
     <div className="menu-page">
       <Header setSearchQuery={setSearchQuery} />  {/* Header with search input */}
-
+      
       {/* Pass restaurantId to FoodCategoryFilter */}
       <FoodCategoryFilter 
         onCategoryChange={(category, type) => {
@@ -116,7 +109,7 @@ const Menu = () => {
         }}
         restaurantId={storedRestaurantId}  // Pass the restaurantId here
       />
-
+      
       {/* Render filtered menu items */}
       <div className="card-div mt-2 mb-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 border-t border-gray-300 pt-2 pb-4">
         {filteredMenu.length > 0 ? (
