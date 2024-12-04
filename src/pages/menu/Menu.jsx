@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';  // For URL params and redirection
 import { useDispatch, useSelector } from 'react-redux';  // For Redux state management
 import { setRestaurantId } from '../Slice/RestaurantSlice';  // Redux action for setting restaurantId
-import { getMenu } from '../../services/apiRestaurant';  // API call to fetch menu data
+import { fetchFoods } from '../Slice/FoodSlice';  // Fetch food items action from Redux
 import MenuItem from './MenuItem.jsx';
 import FoodCategoryFilter from './FilterFood.jsx';
 import Header from '../../components/Header/Header.jsx';
@@ -11,18 +11,12 @@ const Menu = () => {
   const { restaurantId: urlRestaurantId } = useParams();  // Get restaurantId from URL
   const dispatch = useDispatch();
   const storedRestaurantId = useSelector((state) => state.restaurant.restaurantId);  // Get restaurantId from Redux
-  const [menu, setMenu] = useState([]);
+  const { foods, loading, error } = useSelector((state) => state.food);  // Get food state from Redux
   const [filteredMenu, setFilteredMenu] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [foodType, setFoodType] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);  // State for error handling
   const navigate = useNavigate();  // For redirection
-
-  // Log for debugging
-  console.log("URL restaurantId:", urlRestaurantId);
-  console.log("Stored restaurantId from Redux:", storedRestaurantId);
 
   // Update Redux state with restaurantId from URL or redirect if missing
   useEffect(() => {
@@ -37,35 +31,16 @@ const Menu = () => {
     }
   }, [urlRestaurantId, storedRestaurantId, dispatch, navigate]);
 
-  // Fetch menu data based on restaurantId from Redux
+  // Fetch food items based on restaurantId from Redux
   useEffect(() => {
-    const fetchData = async () => {
-      if (!storedRestaurantId) {
-        setError('Restaurant ID is missing');
-        setLoading(false);
-        return;
-      }
-
-      setLoading(true);
-      try {
-        const menuData = await getMenu(storedRestaurantId);  // Fetch menu data using restaurantId
-        setMenu(menuData);
-        setFilteredMenu(menuData);  // Initialize filtered menu
-      } catch (error) {
-        console.error('Error fetching menu data:', error);
-        setError('Failed to load menu');
-      }
-      setLoading(false);
-    };
-
     if (storedRestaurantId) {
-      fetchData();  // Fetch menu data if restaurantId exists
+      dispatch(fetchFoods(storedRestaurantId));  // Dispatch the action to fetch foods
     }
-  }, [storedRestaurantId]);
+  }, [storedRestaurantId, dispatch]);
 
   // Apply filters and search query
   useEffect(() => {
-    let filtered = menu;
+    let filtered = foods;
 
     // Filter by category
     if (selectedCategory !== 'All') {
@@ -85,7 +60,7 @@ const Menu = () => {
     }
 
     setFilteredMenu(filtered);  // Update filtered menu
-  }, [selectedCategory, foodType, searchQuery, menu]);
+  }, [selectedCategory, foodType, searchQuery, foods]);
 
   // If loading, show a loading message
   if (loading) {
