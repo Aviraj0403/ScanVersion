@@ -26,8 +26,8 @@ export const OrderProvider = ({ children }) => {
 
   console.log("restaurantId:", restaurantId);  // Debug the value of restaurantId
   console.log("restaurantIdFromUrl:", restaurantIdFromUrl);
-console.log("restaurantIdFromQuery:", restaurantIdFromQuery);
-console.log("restaurantId (final):", restaurantId);
+  console.log("restaurantIdFromQuery:", restaurantIdFromQuery);
+  console.log("restaurantId (final):", restaurantId);
 
   const [activeTables, setActiveTablesState] = useState([]);
   const [activeOffers, setActiveOffersState] = useState([]);
