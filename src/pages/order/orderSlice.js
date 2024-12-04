@@ -3,29 +3,30 @@ import { createSlice } from "@reduxjs/toolkit";
 const orderSlice = createSlice({
   name: "order",
   initialState: {
-    tempOrders: [],
-    submissionStatus: null,
-    error: null,
-    activeTables: [],
-    activeOffers: [],
-    orderDetails: {},
-    ordersHistory: [],
+    tempOrders: [],           // Temporary orders
+    submissionStatus: null,   // Order submission status
+    error: null,              // Error handling state
+    activeTables: [],         // Active tables for the restaurant
+    activeOffers: [],         // Active offers for the restaurant
+    orderDetails: {},         // Complete details of the order
+    ordersHistory: [],        // Historical orders
   },
   reducers: {
     storeOrderTemporarily: (state, action) => {
-      console.log("Received action payload:", action.payload);
-      if (action.payload) {
-        // Check for duplicate orders
-        const existingOrderIndex = state.tempOrders.findIndex(order => order.id === action.payload.id);
+      const newOrder = action.payload;
+      console.log("Received action payload:", newOrder);
+      if (newOrder) {
+        const existingOrderIndex = state.tempOrders.findIndex(order => order.id === newOrder.id);
         if (existingOrderIndex >= 0) {
-          state.tempOrders[existingOrderIndex] = action.payload; // Update existing order
+          state.tempOrders[existingOrderIndex] = newOrder; // Update existing order
         } else {
-          state.tempOrders.push(action.payload); // Add new order
+          state.tempOrders.push(newOrder); // Add new order
         }
+        state.error = null; // Reset error on successful action
         console.log("Updated tempOrders:", state.tempOrders);
-        state.error = null;
       } else {
         console.error("Attempted to store an undefined order.");
+        state.error = "Failed to store order: Invalid data.";
       }
     },
     clearTempOrders: (state) => {
@@ -33,17 +34,19 @@ const orderSlice = createSlice({
       console.log("Temporary orders cleared.");
     },
     setActiveTables: (state, action) => {
-      if (Array.isArray(action.payload)) {
-        state.activeTables = action.payload;
+      const tables = action.payload;
+      if (Array.isArray(tables)) {
+        state.activeTables = tables;
       } else {
-        console.error("setActiveTables expected an array, but received:", action.payload);
+        console.error("setActiveTables expected an array, but received:", tables);
       }
     },
     setActiveOffers: (state, action) => {
-      if (Array.isArray(action.payload)) {
-        state.activeOffers = action.payload;
+      const offers = action.payload;
+      if (Array.isArray(offers)) {
+        state.activeOffers = offers;
       } else {
-        console.error("setActiveOffers expected an array, but received:", action.payload);
+        console.error("setActiveOffers expected an array, but received:", offers);
       }
     },
     setSubmissionStatus: (state, action) => {
@@ -53,22 +56,30 @@ const orderSlice = createSlice({
       state.error = action.payload;
     },
     restoreOrders: (state, action) => {
-      if (Array.isArray(action.payload)) {
-        state.tempOrders = action.payload;
+      const orders = action.payload;
+      if (Array.isArray(orders)) {
+        state.tempOrders = orders;
       } else {
-        console.error("restoreOrders expected an array, but received:", action.payload);
+        console.error("restoreOrders expected an array, but received:", orders);
       }
     },
     setOrderDetails: (state, action) => {
-      if (action.payload) {
-        state.orderDetails = action.payload;
+      const orderDetails = action.payload;
+      if (orderDetails) {
+        state.orderDetails = orderDetails;
       } else {
         console.error("Attempted to set undefined order details.");
+        state.error = "Failed to set order details.";
       }
     },
     addOrderToHistory: (state, action) => {
-      // Save the order to history
-      state.ordersHistory.push(action.payload);
+      const order = action.payload;
+      if (order) {
+        state.ordersHistory.push(order); // Save the order to history
+      } else {
+        console.error("Attempted to add undefined order to history.");
+        state.error = "Failed to add order to history.";
+      }
     },
   },
 });
@@ -82,7 +93,7 @@ export const {
   setSubmissionStatus, 
   setOrderError, 
   restoreOrders,
-  setOrderDetails ,
+  setOrderDetails,
   addOrderToHistory 
 } = orderSlice.actions;
 
