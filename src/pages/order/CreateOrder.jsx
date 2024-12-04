@@ -27,7 +27,7 @@ const CreateOrder = () => {
   // Get restaurantId from context or fallback to Redux (if available)
   const { activeTables, activeOffers, restaurantId } = useOrderContext() || {}; 
   const reduxRestaurantId = useSelector((state) => state.restaurant?.restaurantId); 
-
+  // const storedRestaurantId = useSelector((state) => state.restaurant.restaurantId);
   const currentRestaurantId = restaurantId || reduxRestaurantId; 
 
   useEffect(() => {
