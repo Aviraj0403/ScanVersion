@@ -31,6 +31,7 @@ const CreateOrder = () => {
     const currentRestaurantId = restaurantId || reduxRestaurantId; // Fallback to Redux if context is unavailable
 
     useEffect(() => {
+        console.log('Current Restaurant ID:', currentRestaurantId)
         if (!currentRestaurantId) return; // Exit early if no restaurantId is available
 
         // Fetch foods, offers, and tables when the component mounts
@@ -42,7 +43,7 @@ const CreateOrder = () => {
     useEffect(() => {
         console.log('Active Offers from Redux:', activeOffers);
         console.log('Active Tables from Redux:', activeTables); // Debugging the active offers
-    }, [activeOffers]);
+    }, [activeOffers, activeTables]);
 
     const totalPrice = useMemo(() => {
         const priorityPrice = withPriority ? totalCartPrice * 0.2 : 0;
