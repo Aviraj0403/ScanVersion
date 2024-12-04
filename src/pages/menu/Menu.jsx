@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setRestaurantId } from '../Slice/RestaurantSlice';
-import { fetchFoods } from '../Slice/foodSlice';  // Import your fetchFoods action
+import { fetchFoods } from '../Slice/FoodSlice.js';  // Import your fetchFoods action
 import MenuItem from './MenuItem.jsx';
 import FoodCategoryFilter from './FilterFood.jsx';
 import Header from '../../components/Header/Header.jsx';
