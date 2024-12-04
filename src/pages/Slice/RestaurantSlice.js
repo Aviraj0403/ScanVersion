@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  restaurantId: null,        // Stores the restaurant ID
-  menuData: [],              // Stores all menu data for the restaurant
-  filteredMenuData: [],      // Stores filtered menu data based on user input
+  restaurantId: null,
+  menuData: [], // Menu data state
+  filteredMenuData: [], // Filtered menu data state
 };
 
 const restaurantSlice = createSlice({

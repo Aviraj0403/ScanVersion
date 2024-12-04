@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// Fetch offers using an async thunk that accepts restaurantId
-export const fetchOffers = createAsyncThunk('offer/fetchOffers', async (restaurantId) => {
-  const response = await fetch(`/api/offers?restaurantId=${restaurantId}`); // Include restaurantId in the API request
+// Fetch offers using an async thunk
+export const fetchOffers = createAsyncThunk('offer/fetchOffers', async () => {
+  const response = await fetch('/api/offers'); // Update with your actual endpoint
   if (!response.ok) throw new Error('Failed to fetch offers');
   return response.json();
 });

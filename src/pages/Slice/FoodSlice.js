@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// Create an async action to fetch food items based on restaurantId
-export const fetchFoods = createAsyncThunk('food/fetchFoods', async (restaurantId) => {
-  const response = await fetch(`/api/foods?restaurantId=${restaurantId}`);  // Pass the restaurantId in the API call
+export const fetchFoods = createAsyncThunk('food/fetchFoods', async () => {
+  const response = await fetch('/api/foods'); // Update with your actual endpoint
   if (!response.ok) throw new Error('Failed to fetch foods');
   return response.json();
 });
