@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useParams } from 'react-router-dom';  // For getting `restaurantId` from URL
+import { useDispatch } from 'react-redux';
 import { setActiveTables, setActiveOffers, storeOrderTemporarily, setOrderDetails } from '../pages/order/orderSlice';
 import { fetchActiveDiningTables, fetchActiveOffer } from '../services/apiRestaurant';
 import useSocket from '../hooks/useSocket';
@@ -9,33 +8,16 @@ const OrderContext = createContext();
 
 export const OrderProvider = ({ children }) => {
   const dispatch = useDispatch();
-  
-  // Get restaurantId from Redux store
-  const restaurantIdFromRedux = useSelector(state => state.restaurant.id);
-  
-  // Get restaurantId from URL using React Router's useParams or useLocation for query string
-  const { restaurantId: restaurantIdFromUrl } = useParams();
-  const location = useLocation();  // To access the full URL
-
-  // Extract restaurantId from the query string (e.g., ?restaurantId=...)
-  const urlParams = new URLSearchParams(location.search);
-  const restaurantIdFromQuery = urlParams.get('restaurantId');
-  
-  // Use restaurantId from Redux, URL path, or query string (priority: query string > path > Redux)
-  const restaurantId = restaurantIdFromQuery || restaurantIdFromUrl || restaurantIdFromRedux;
-
-  console.log("restaurantId:", restaurantId);  // Debug the value of restaurantId
-  console.log("restaurantIdFromUrl:", restaurantIdFromUrl);
-  console.log("restaurantIdFromQuery:", restaurantIdFromQuery);
-  console.log("restaurantId (final):", restaurantId);
-
+  // Extract restaurantId from the URL query parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const restaurantId = urlParams.get('restaurantId'); // Get the restaurantId from query string
   const [activeTables, setActiveTablesState] = useState([]);
   const [activeOffers, setActiveOffersState] = useState([]);
   const [tempOrders, setTempOrders] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!restaurantId) return; // Prevent fetching if no restaurantId is provided
+    if (!restaurantId) return;
 
     const fetchData = async () => {
       try {

@@ -1,14 +1,12 @@
-// src/App.js
-
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { restoreOrders } from './pages/order/orderSlice'; // Adjust the path as necessary
+import { restoreOrders } from './pages/order/orderSlice'; 
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './store'; 
 import { RouterProvider } from "react-router-dom";
 import router from "./Router/Router.jsx"; 
 import Footer from "./components/Footer/footer.jsx"; 
-import { OrderProvider } from './contexts/OrderContext.jsx'; // Adjust path as necessary
+import { OrderProvider } from './contexts/OrderContext.jsx'; 
 
 function App() {
     const dispatch = useDispatch();
