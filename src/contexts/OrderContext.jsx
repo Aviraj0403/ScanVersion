@@ -8,9 +8,9 @@ const OrderContext = createContext();
 
 export const OrderProvider = ({ children }) => {
   const dispatch = useDispatch();
-  // Extract restaurantId from the URL query parameter
   const urlParams = new URLSearchParams(window.location.search);
-  const restaurantId = urlParams.get('restaurantId'); // Get the restaurantId from query string
+  const restaurantId = urlParams.get('restaurantId');
+  
   const [activeTables, setActiveTablesState] = useState([]);
   const [activeOffers, setActiveOffersState] = useState([]);
   const [tempOrders, setTempOrders] = useState([]);

@@ -19,6 +19,7 @@ const Payment = () => {
     const { activeTables, activeOffers } = useOrderContext();
     const [loading, setLoading] = useState(false); // Loading state
 
+    
     useEffect(() => {
         if (!order) {
             console.log("No order found, redirecting...");
