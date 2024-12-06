@@ -1,39 +1,66 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <!-- Google fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-   <link
-    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Rubik:wght@400;500;600;700&family=Shadows+Into+Light&display=swap"
-    rel="stylesheet">
 
-  <!-- 
-    - preload images
-  -->
-  <link rel="preload" as="image" href="/src/assets/images/hero-banner.png" media="min-width(768px)">
-  <link rel="preload" as="image" href="/src/assets/images/hero-banner-bg.png" media="min-width(768px)">
-  <link rel="preload" as="image" href="/src/assets/images/hero-bg.jpg">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/5.5.2/css/ionicons.min.css" />
-  <!-- Add this in your index.html or public HTML file -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="A restaurant ordering app by Br Tech. Fast and easy ordering experience." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://yourwebsite.com/" />
+  
+  <!-- Favicon -->
+  <link rel="icon" href="/favicon.png" type="image/png" />
+  
+  <!-- Google Fonts (Preload to speed up font loading) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Rubik:wght@400;500;600;700&family=Shadows+Into+Light&display=swap" />
 
-<link rel="manifest" href="public/manifest.json" />
-  <link href="https://unpkg.com/ionicons@5.5.2/dist/css/ionicons.min.css" rel="stylesheet">
-  <!-- <link rel="preload" as="image" href="/src/assets/" media="min-width(768px)"> -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Preload key images for above-the-fold content -->
+  <link rel="preload" as="image" href="/assets/images/hero-banner.png" media="(min-width:768px)" />
+  <link rel="preload" as="image" href="/assets/images/hero-banner-bg.png" media="(min-width:768px)" />
+  <link rel="preload" as="image" href="/assets/images/hero-bg.jpg" />
 
-    <title>Br Tech | Restaurant</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <!-- Preload critical CSS (if any) -->
+  <!-- Example: <link rel="preload" href="/path/to/critical.css" as="style"> -->
+  <link rel="preload" href="https://checkout-static-next.razorpay.com/build/chunks/v2-entry-upi-ec23070a.modern.js" as="script" />
 
-  </body>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <!-- Ionicons (for icons) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ionicons@7.4.0/dist/collection/components/icon/icon.min.css" />
+
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Title -->
+  <title>Br Tech | Restaurant</title>
+
+  <!-- Optional: Open Graph / Twitter Card meta tags for social sharing -->
+  <meta property="og:title" content="Br Tech Restaurant App" />
+  <meta property="og:description" content="Order food easily with our restaurant app." />
+  <meta property="og:image" content="/assets/images/hero-banner.png" />
+  <meta name="twitter:title" content="Br Tech Restaurant App" />
+  <meta name="twitter:description" content="Order food easily with our restaurant app." />
+  <meta name="twitter:image" content="/assets/images/hero-banner.png" />
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <!-- Main React App Script (Deferred to improve performance) -->
+  <script type="module" src="/src/main.jsx" defer></script>
+
+  <!-- Ionicons JS (For icon components) -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js" defer></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js" defer></script>
+
+  <!-- Razorpay Checkout Script (Async to avoid blocking render) -->
+  <script async src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  
+</body>
+
 </html>

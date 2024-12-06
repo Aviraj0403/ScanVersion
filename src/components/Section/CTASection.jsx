@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 const CTASection = () => (
   <section
     className="relative bg-cover bg-center text-center py-16 px-4 md:py-24 md:px-8"
-    style={{ backgroundImage: "url('/assets/images/hero-bg.jpg')" }}
+    style={{ backgroundImage: "url('/assets/images/hero-bg.jpg')" }} // Fixed path
   >
     <div className="container mx-auto flex flex-col items-center">
       <div className="relative z-10 max-w-3xl">
@@ -17,13 +17,13 @@ const CTASection = () => (
           the Jurchen invasion of the 1120s, while it is also known that many restaurants were run by families.
         </p>
         <Link to="/menu" className="bg-orange-500 text-white px-4 py-2 md:px-6 md:py-3 rounded hover:bg-orange-600 transition duration-300">
-        Order Now
-      </Link>
+          Order Now
+        </Link>
       </div>
       <figure className="relative mt-6 md:mt-8 max-w-4xl">
-        <img src="\assets\images\cta-banner.png" alt="Burger" className="w-full h-auto object-cover mx-auto" />
+        <img src="/assets/images/cta-banner.png" alt="Burger" className="w-full h-auto object-cover mx-auto" /> {/* Fixed path */}
         <img
-          src="\assets\images\sale-shape.png"
+          src="/assets/images/sale-shape.png" // Fixed path
           alt="Get up to 50% off now"
           className="absolute top-0 right-0 transform -translate-x-1/4 md:-translate-x-1/2 scale-110"
         />

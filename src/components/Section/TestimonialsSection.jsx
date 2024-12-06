@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import './TestimonialsSection.css'; // Import the CSS file
 
@@ -43,11 +42,11 @@ const TestimonialsSection = () => {
           Food is any substance consumed to provide nutritional support for an organism.
         </p>
         <ul className="flex flex-wrap justify-center gap-6 mb-10">
-          {[1, 2, 3].map(index => (
+          {[1, 2, 3].map((index) => (
             <li key={index} className="bg-white p-4 md:p-6 shadow-lg rounded w-full md:w-80">
               <div className="flex items-center mb-4">
                 <img
-                  src={`/assets/aviraj.jpg`}
+                  src="/assets/aviraj.jpg" // Ensure this image exists in your public/assets folder
                   alt={`Customer ${index}`}
                   className="w-20 h-20 rounded-full mr-4 object-cover"
                 />
@@ -60,7 +59,7 @@ const TestimonialsSection = () => {
                 "I would be lost without this restaurant. I would like to personally thank you for your outstanding product."
               </blockquote>
               <div className="flex space-x-1 text-yellow-500">
-                {[1, 2, 3, 4, 5].map(star => (
+                {[1, 2, 3, 4, 5].map((star) => (
                   <svg key={star} className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 2l2.39 7.68L22 10l-6 4.5L18 22l-6-4-6 4 2-7.5L2 10l7.61-1.32L12 2z" />
                   </svg>
@@ -134,6 +133,3 @@ const TestimonialsSection = () => {
 };
 
 export default TestimonialsSection;
-
-
-

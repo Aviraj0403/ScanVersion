@@ -16,8 +16,8 @@ const DeliverySection = () => (
         </button>
       </div>
       <figure className="relative mt-6 md:mt-8 max-w-4xl">
-        <img src="\assets\images\delivery-banner-bg.png" alt="Clouds" className="w-full h-auto object-cover mx-auto" />
-        <img src="\assets\images\delivery-boy.svg" alt="Delivery boy" className="absolute top-0 left-0 transform -translate-x-1/4 md:-translate-x-1/2" />
+        <img src="/assets/images/delivery-banner-bg.png" alt="Clouds" className="w-full h-auto object-cover mx-auto" /> {/* Fixed path */}
+        <img src="/assets/images/delivery-boy.svg" alt="Delivery boy" className="absolute top-0 left-0 transform -translate-x-1/4 md:-translate-x-1/2" /> {/* Fixed path */}
       </figure>
     </div>
   </section>
