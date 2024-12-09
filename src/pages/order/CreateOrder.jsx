@@ -86,6 +86,7 @@ const CreateOrder = () => {
       priority: withPriority,
       totalPrice
     };
+    console.log("Order to be submitted:", order);
 
     const errors = validateOrder(order);
     if (Object.keys(errors).length > 0) {

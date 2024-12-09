@@ -58,6 +58,7 @@ const Payment = () => {
 
         const transactionId = Math.random().toString(36).substring(2, 15);
         console.log("Transaction ID:", transactionId);
+        console.log("Order Details for Payment:", order);
         setLoading(true); // Start loading
 
         try {
