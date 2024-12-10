@@ -19,7 +19,7 @@ const Payment = () => {
     const { activeTables, activeOffers } = useOrderContext();
     const [loading, setLoading] = useState(false); // Loading state
 
-    
+
     useEffect(() => {
         if (!order) {
             console.log("No order found, redirecting...");
@@ -134,7 +134,9 @@ const Payment = () => {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Payment processing failed');
+                    const errorDetails = await response.text();  // Retrieve error details from the response body
+                    console.error('Failed to create Razorpay order:', errorDetails);
+                    throw new Error('Failed to create Razorpay order');
                 }
 
                 const result = await response.json();

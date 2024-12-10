@@ -18,9 +18,13 @@ const orderSlice = createSlice({
       if (newOrder) {
         const existingOrderIndex = state.tempOrders.findIndex(order => order.id === newOrder.id);
         if (existingOrderIndex >= 0) {
-          state.tempOrders[existingOrderIndex] = newOrder; // Update existing order
+          state.tempOrders = [
+            ...state.tempOrders.slice(0, existingOrderIndex),
+            newOrder,
+            ...state.tempOrders.slice(existingOrderIndex + 1),
+          ]; // Use spread to create new array
         } else {
-          state.tempOrders.push(newOrder); // Add new order
+          state.tempOrders = [...state.tempOrders, newOrder]; // Add new order using spread
         }
         state.error = null; // Reset error on successful action
         console.log("Updated tempOrders:", state.tempOrders);
