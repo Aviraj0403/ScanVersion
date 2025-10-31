@@ -1,7 +1,4 @@
-// const BASE_API_URL = "https://backend-obet.onrender.com/api";  // Define the base API URL
-const BASE_API_URL="https://apitesting.iirhe.org.in/api"
-
-// Function to fetch data from a given URL with dynamic restaurantId
+const BASE_API_URL="https://apirestaurant.bytethard.com/api";
 async function fetchData(url, options = {}) {
   const res = await fetch(url, options);
   if (!res.ok) {
